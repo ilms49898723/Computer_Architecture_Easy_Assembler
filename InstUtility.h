@@ -14,6 +14,19 @@
 
 namespace lb {
 
+struct AssemblerArgumentInfo {
+    bool hasA, hasD;
+    bool hasInputFile;
+    bool hasOutputFile;
+    bool isValid;
+    std::string inputFile;
+    std::string outputFile;
+    AssemblerArgumentInfo() {
+        hasA = hasD = hasInputFile = hasOutputFile = isValid = false;
+        inputFile = outputFile = std::string();
+    }
+};
+
 template<typename Tp>
 std::string toString(const Tp& val) {
     std::basic_stringstream<char> oss;
@@ -36,6 +49,11 @@ std::string toHexString(const Tp& val) {
     oss << std::showbase << std::hex << val;
     return oss.str();
 }
+
+// check main arguments for easy assembler
+bool isValidArguments(int& argc, char**& argv);
+
+AssemblerArgumentInfo processArguments(int& argc, char**& argv);
 
 // for convenience, only use static_cast<int>
 int toSigned(const unsigned& src);

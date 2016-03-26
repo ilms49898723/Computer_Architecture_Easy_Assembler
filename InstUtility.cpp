@@ -9,6 +9,75 @@
 
 namespace lb {
 
+bool isValidArguments(int& argc, char**& argv) {
+    if (argc < 2 || argc > 5) {
+        return false;
+    }
+    bool hasA = false;
+    bool hasD = false;
+    bool hasOutput = false;
+    for (int i = 1; i < argc; ++i) {
+        if (std::string(argv[i]) == "-d" || std::string(argv[i]) == "-D") {
+            hasD = true;
+        }
+        if (std::string(argv[i]) == "-a" || std::string(argv[i]) == "-A") {
+            hasA = true;
+        }
+    }
+    if (hasA == hasD) {
+        return false;
+    }
+    for (int i = 1; i < argc; ++i) {
+        if (std::string(argv[i]) == "-o" || std::string(argv[i]) == "-O") {
+            hasOutput = true;
+        }
+    }
+    if (hasOutput) {
+        return argc >= 4 && argc <= 5;
+    }
+    else {
+        return argc >= 2 && argc <= 3;
+    }
+}
+
+AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
+    if (!isValidArguments(argc, argv)) {
+        return AssemblerArgumentInfo();
+    }
+    AssemblerArgumentInfo ret;
+    bool usedArguments[10] = { false } ;
+    for (int i = 1; i < argc; ++i) {
+        if (std::string(argv[i]) == "-a" || std::string(argv[i]) == "-A") {
+            ret.hasA = true;
+            usedArguments[i] = true;
+        }
+        if (std::string(argv[i]) == "-d" || std::string(argv[i]) == "-D") {
+            ret.hasD = true;
+            usedArguments[i] = true;
+        }
+        if (std::string(argv[i]) == "-o" || std::string(argv[i]) == "-O") {
+            ret.hasOutputFile = true;
+            usedArguments[i] = true;
+            if (i + 1 < argc) {
+                ret.outputFile = argv[i + 1];
+                usedArguments[i + 1] = true;
+            }
+            else {
+                return AssemblerArgumentInfo();
+            }
+        }
+    }
+    for (int i = 1; i < argc; ++i) {
+        if (!usedArguments[i]) {
+            ret.hasInputFile = true;
+            ret.inputFile = argv[i];
+            usedArguments[i] = true;
+        }
+    }
+    ret.isValid = true;
+    return ret;
+}
+
 int toSigned(const unsigned& src) {
     return static_cast<int>(src);
 }
