@@ -74,6 +74,12 @@ AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
             usedArguments[i] = true;
         }
     }
+    if (ret.hasD && !ret.hasInputFile) {
+        return AssemblerArgumentInfo();
+    }
+    if (ret.hasA && !ret.hasOutputFile) {
+        return AssemblerArgumentInfo();
+    }
     ret.isValid = true;
     return ret;
 }
