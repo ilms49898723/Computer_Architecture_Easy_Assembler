@@ -16,8 +16,8 @@ int main(int argc, char **argv) {
     if (argc == 2 && std::string(argv[1]) == "-h") {
         printf("-a for assembler, -d for disassembler\n");
         printf("ex.\n");
-        printf("    %s -a [InputFilePath] [-o outputFilePath]\n", argv[0]);
-        printf("    %s -d [InputFilePath] [-o outputFilePath]\n", argv[0]);
+        printf("    %s -a [InputFilePath] -o outputFilePath\n", argv[0]);
+        printf("    %s -d InputFilePath [-o outputFilePath]\n", argv[0]);
         printf("\n");
         exit(EXIT_SUCCESS);
     }
@@ -32,16 +32,38 @@ int main(int argc, char **argv) {
     printf("OutputFile: %s\n", (argu.hasOutputFile) ? argu.outputFile.c_str() : "N/A");
     printf("\n");
     if (argu.hasD) {
+        FILE* fout;
+        if (argu.hasOutputFile) {
+            fout = fopen(argu.outputFile.c_str(), "w");
+        }
+        else {
+            fout = stdout;
+        }
+        if (!fout) {
+            fprintf(stderr, "File Open Error!\n");
+            exit(EXIT_FAILURE);
+        }
         unsigned len, pc;
         unsigned inst[1024];
-        len = lb::InstImageReader::readImageI(argv[2], inst, &pc);
-        printf("length = %u, pc = %u\n", len, pc);
-        printf("%d instructions to decode\n", len);
+        len = lb::InstImageReader::readImageI(argu.inputFile.c_str(), inst, &pc);
         for (unsigned i = 0; i < len; ++i) {
-            printf("%s\n", lb::InstDecode::decodeInstStr(inst[i]).toString().c_str());
+            fprintf(fout, "%s\n", lb::InstDecode::decodeInstStr(inst[i]).toString().c_str());
         }
-        printf("finished\n");
+        printf("Finished.\n");
         exit(EXIT_SUCCESS);
+    }
+    else {
+        FILE* fin;
+        if (argu.hasInputFile) {
+            fin = fopen(argu.inputFile.c_str(), "rb");
+        }
+        else {
+            fin = stdin;
+        }
+        if (!fin) {
+            fprintf(stderr, "File Open Error!\n");
+            exit(EXIT_FAILURE);
+        }
     }
     return 0;
 }
