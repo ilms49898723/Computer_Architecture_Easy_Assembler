@@ -127,4 +127,4 @@ std::string InstDataStr::toString() const {
     }
 }
 
-} /* namespace LB */
+} /* namespace lb */

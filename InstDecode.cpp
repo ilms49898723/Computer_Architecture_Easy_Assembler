@@ -147,4 +147,4 @@ InstDataBin InstDecode::decodeInstBin(const unsigned* src) {
     return InstDecode::decodeInstBin(argu);
 }
 
-} /* namespace LB */
+} /* namespace lb */

@@ -81,4 +81,4 @@ void InstDataBin::setInst(const unsigned& val) {
     inst = val;
 }
 
-} /* namespace LB */
+} /* namespace lb */

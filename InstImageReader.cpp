@@ -69,4 +69,4 @@ unsigned InstImageReader::readWordFromBin(FILE* fin) {
     return (input[0] << 24) | (input[1] << 16) | (input[2] << 8) | (input[3]);
 }
 
-} /* namespace LB */
+} /* namespace lb */

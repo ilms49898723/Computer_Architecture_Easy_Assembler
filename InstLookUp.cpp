@@ -186,4 +186,4 @@ std::string InstLookUp::registerLookUpName(const unsigned& src) {
     return InstLookUp::registerLookUpTable[src];
 }
 
-} /* namespace LB */
+} /* namespace lb */

@@ -43,4 +43,4 @@ unsigned getBitsInRange(const unsigned& src, const int& l, const int& r) {
     return (src << (32 - r)) >> (l + (32 - r));
 }
 
-} /* namespace LB */
+} /* namespace lb */
