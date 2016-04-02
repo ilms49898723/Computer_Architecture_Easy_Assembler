@@ -7,63 +7,160 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <utility>
 #include <string>
+#include <vector>
+#include <map>
+#include "InstUtility.h"
+#include "InstEncoder.h"
 #include "InstDecoder.h"
 #include "InstImageReader.h"
-#include "InstUtility.h"
+
+inline void writeUnsigned(FILE* fout, const unsigned& src);
 
 int main(int argc, char **argv) {
     if (argc == 2 && std::string(argv[1]) == "-h") {
         printf("-a for assembler, -d for disassembler\n");
         printf("ex.\n");
-        printf("    %s -a [InputFilePath] -o outputFilePath\n", argv[0]);
-        printf("    %s -d InputFilePath [-o outputFilePath]\n", argv[0]);
+        printf("    %s -a InputFilePath -o OutputFilePath\n", argv[0]);
+        printf("    %s -d InputFilePath -o OutputFilePath\n", argv[0]);
+        printf("option:\n-nolabel: don\'t print label in branch instructions like beq\n");
+        printf("ex.\n    beq $t0, $t0, LABEL1 --> beq $t0, $t0, 0x0");
         printf("\n");
         exit(EXIT_SUCCESS);
     }
     lb::AssemblerArgumentInfo argu = lb::processArguments(argc, argv);
     if (!argu.isValid) {
-        fprintf(stderr, "Invalid Arguments.\nUse %s -h for more information.\n", argv[0]);
+        fprintf(stderr, "Invalid Arguments.\n%s -h for more information.\n", argv[0]);
         exit(EXIT_FAILURE);
     }
-    printf("Info:\n");
+    printf("--Info--\n");
     printf("Mode: %s\n", (argu.hasD) ? "Disassembler" : "Assembler");
     printf("InputFile: %s\n", (argu.hasInputFile) ? argu.inputFile.c_str() : "N/A");
     printf("OutputFile: %s\n", (argu.hasOutputFile) ? argu.outputFile.c_str() : "N/A");
-    printf("\n");
     if (argu.hasD) {
-        FILE* fout;
-        if (argu.hasOutputFile) {
-            fout = fopen(argu.outputFile.c_str(), "w");
-        }
-        else {
-            fout = stdout;
-        }
+        FILE* fout = nullptr;
+        fout = fopen(argu.outputFile.c_str(), "w");
         if (!fout) {
             fprintf(stderr, "File Open Error!\n");
             exit(EXIT_FAILURE);
         }
+        std::vector<std::string> assembly;
+        std::map<int, std::string> labelTable;
+        int labelCount = 0;
         unsigned len, pc;
         unsigned inst[1024];
         len = lb::InstImageReader::readImageI(argu.inputFile.c_str(), inst, &pc);
         for (unsigned i = 0; i < len; ++i) {
-            fprintf(fout, "%s\n", lb::InstDecoder::decodeInstStr(inst[i]).toString().c_str());
+            assembly.push_back(lb::InstDecoder::decodeInstStr(inst[i]).toString());
+        }
+        if (!argu.hasNoLabel) {
+            for (unsigned i = 0; i < assembly.size(); ++i) {
+                std::string &current = assembly[i];
+                if (current.find("beq") != std::string::npos ||
+                    current.find("bne") != std::string::npos) {
+                    char op[1024], rs[1024], rt[1024], c[1024];
+                    sscanf(current.c_str(), "%s%s%s%s", op, rs, rt, c);
+                    int offset;
+                    sscanf(c, "%x", &offset);
+                    offset = lb::toSigned(static_cast<unsigned>(offset), 16);
+                    offset = (offset << 2 + 4) >> 2;
+                    if (!labelTable.count(i + offset)) {
+                        char temp[1024];
+                        sprintf(temp, "%d", labelCount);
+                        ++labelCount;
+                        std::string newLabel = "L" + std::string(temp);
+                        labelTable.insert(std::make_pair(i + offset, newLabel));
+                    }
+                    current = std::string(op) + " " + std::string(rs) + " " + std::string(rt) + " " +
+                              labelTable[i + offset];
+                }
+                else if (current.find("bgtz") != std::string::npos) {
+                    char op[1024], rs[1024], c[1024];
+                    sscanf(current.c_str(), "%s%s%s", op, rs, c);
+                    int offset;
+                    sscanf(c, "%x", &offset);
+                    offset = lb::toSigned(static_cast<unsigned>(offset), 16);
+                    offset = (offset << 2 + 4) >> 2;
+                    if (!labelTable.count(i + offset)) {
+                        char temp[1024];
+                        sprintf(temp, "%d", labelCount);
+                        ++labelCount;
+                        std::string newLabel = "L" + std::string(temp);
+                        labelTable.insert(std::make_pair(i + offset, newLabel));
+                    }
+                    current = std::string(op) + " " + std::string(rs) + " " + labelTable[i + offset];
+                }
+                else if (current.find("j") != std::string::npos ||
+                         current.find("jal") != std::string::npos) {
+                    char op[1024], c[1024];
+                    sscanf(current.c_str(), "%s%s", op, c);
+                    int offset;
+                    sscanf(c, "%x", &offset);
+                    if (!labelTable.count(i + offset)) {
+                        char temp[1024];
+                        sprintf(temp, "%d", labelCount);
+                        ++labelCount;
+                        std::string newLabel = "L" + std::string(temp);
+                        labelTable.insert(std::make_pair(i + offset, newLabel));
+                    }
+                    current = std::string(op) + " " + labelTable[i + offset];
+                }
+            }
+        }
+        for (unsigned i = 0; i < assembly.size(); ++i) {
+            if (!argu.hasNoLabel) {
+                if (labelTable.count(i)) {
+                    for (unsigned long long j = labelTable[i].length(); j < 4; ++j) {
+                        fprintf(fout, " ");
+                    }
+                    fprintf(fout, "%s: ", labelTable[i].c_str());
+                }
+                else {
+                    fprintf(fout, "      ");
+                }
+            }
+            fprintf(fout, "%s\n", assembly[i].c_str());
         }
         printf("Finished.\n");
+        fclose(fout);
         exit(EXIT_SUCCESS);
     }
     else {
-        FILE* fin;
-        if (argu.hasInputFile) {
-            fin = fopen(argu.inputFile.c_str(), "rb");
-        }
-        else {
-            fin = stdin;
-        }
-        if (!fin) {
+        FILE* fin = nullptr;
+        FILE *fout = nullptr;
+        fin = fopen(argu.inputFile.c_str(), "rb");
+        fout = fopen(argu.outputFile.c_str(), "w");
+        if (!fin || !fout) {
             fprintf(stderr, "File Open Error!\n");
             exit(EXIT_FAILURE);
         }
+        unsigned initialPc = 0;
+        printf("Initial Value of PC: ");
+        scanf("%u", &initialPc);
+        writeUnsigned(fout, initialPc);
+        char inputBuffer[2048];
+        lb::InstEncoder instEncoder;
+        std::vector<unsigned> v;
+        while (fgets(inputBuffer, 2048, fin)) {
+            unsigned ret = instEncoder.encodeInst(inputBuffer);
+            v.push_back(ret);
+        }
+        writeUnsigned(fout, v.size());
+        for (const auto i : v) {
+            writeUnsigned(fout, i);
+        }
+        fclose(fin);
+        fclose(fout);
+        exit(EXIT_SUCCESS);
     }
-    return 0;
+}
+
+inline void writeUnsigned(FILE *fout, const unsigned &src) {
+    unsigned char buffer[4];
+    buffer[0] = static_cast<unsigned char>((src & 0xFF000000u) >> 24);
+    buffer[1] = static_cast<unsigned char>((src & 0x00FF0000u) >> 16);
+    buffer[2] = static_cast<unsigned char>((src & 0x0000FF00u) >> 8);
+    buffer[3] = static_cast<unsigned char>((src & 0x000000FFu));
+    fwrite(buffer, sizeof(unsigned char), 4, fout);
 }
