@@ -188,7 +188,7 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
         return InstEncodeData(0xFFFFFFFFu, true);
     }
     else {
-        fprintf(stderr, "Line %d: Unrecognized instruction %s\n", line, op);
+        fprintf(stderr, "Line %d: Unrecognized instruction %s\n", line, op.c_str());
         return InstEncodeData(0xFFFFFFFFu, false);
     }
 }
