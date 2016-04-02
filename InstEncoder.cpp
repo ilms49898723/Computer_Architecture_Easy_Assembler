@@ -6,7 +6,7 @@
 
 namespace lb {
 
-struct InstDataEncode {
+struct InstEncoder::InstDataEncode {
     std::string opCode;
     std::string rs, rt, rd;
     std::string c;
@@ -39,12 +39,12 @@ void InstEncoder::init(const unsigned &pc) {
 }
 
 unsigned InstEncoder::encodeInst(std::string inst) {
-    InstDataEncode data = analyzeString(inst);
+    InstEncoder::InstDataEncode data = analyzeString(inst);
     pc += 4; // pc offset
     return 0;
 }
 
-InstDataEncode InstEncoder::analyzeString(std::string inst) {
+InstEncoder::InstDataEncode InstEncoder::analyzeString(std::string inst) {
     // deal with comma ','
     for (unsigned i = 0; i < inst.length(); ++i) {
         if (inst[i] == ',') {
