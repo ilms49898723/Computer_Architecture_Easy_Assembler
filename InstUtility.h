@@ -18,11 +18,12 @@ struct AssemblerArgumentInfo {
     bool hasA, hasD;
     bool hasInputFile;
     bool hasOutputFile;
+    bool hasNoLabel;
     bool isValid;
     std::string inputFile;
     std::string outputFile;
     AssemblerArgumentInfo() {
-        hasA = hasD = hasInputFile = hasOutputFile = isValid = false;
+        hasA = hasD = hasInputFile = hasOutputFile = hasNoLabel = isValid = false;
         inputFile = outputFile = std::string();
     }
 };
@@ -53,6 +54,7 @@ std::string toHexString(const Tp& val) {
 // check main arguments for easy assembler
 bool isValidArguments(int& argc, char**& argv);
 
+// analyze main arguments
 AssemblerArgumentInfo processArguments(int& argc, char**& argv);
 
 // for convenience, only use static_cast<int>
