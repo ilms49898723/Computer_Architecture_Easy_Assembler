@@ -147,29 +147,11 @@ std::string InstLookUp::opCodeLookUp(const unsigned& src) {
     return InstLookUp::opCodeLookUpTable[src];
 }
 
-unsigned InstLookUp::translateToOpCode(const std::string& src) {
-    for (unsigned i = 0; i < 0x3Fu; ++i) {
-        if (InstLookUp::opCodeLookUpTable[i] == src) {
-            return i;
-        }
-    }
-    return 0xFFFFFFFFu;
-}
-
 std::string InstLookUp::functLookUp(const unsigned& src) {
     if (src > 0x30u) {
         return "undef";
     }
     return InstLookUp::functLookUpTable[src];
-}
-
-unsigned InstLookUp::translateToFunct(const std::string& src) {
-    for (unsigned i = 0; i < 0x31u; ++i) {
-        if (InstLookUp::functLookUpTable[i] == src) {
-            return i;
-        }
-    }
-    return 0xFFFFFFFFu;
 }
 
 std::string InstLookUp::registerLookUpNumber(const unsigned& src) {
