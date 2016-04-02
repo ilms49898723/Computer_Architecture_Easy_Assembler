@@ -158,7 +158,7 @@ int main(int argc, char **argv) {
             lb::InstEncodeData ret = instEncoder.encodeInst(i);
             binary.push_back(ret.inst);
         }
-        writeUnsigned(fout, binary.size());
+        writeUnsigned(fout, static_cast<unsigned>(binary.size()));
         for (const auto i : binary) {
             writeUnsigned(fout, i);
         }
