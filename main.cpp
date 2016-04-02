@@ -8,7 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
-#include "InstDecode.h"
+#include "InstDecoder.h"
 #include "InstImageReader.h"
 #include "InstUtility.h"
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
         unsigned inst[1024];
         len = lb::InstImageReader::readImageI(argu.inputFile.c_str(), inst, &pc);
         for (unsigned i = 0; i < len; ++i) {
-            fprintf(fout, "%s\n", lb::InstDecode::decodeInstStr(inst[i]).toString().c_str());
+            fprintf(fout, "%s\n", lb::InstDecoder::decodeInstStr(inst[i]).toString().c_str());
         }
         printf("Finished.\n");
         exit(EXIT_SUCCESS);
