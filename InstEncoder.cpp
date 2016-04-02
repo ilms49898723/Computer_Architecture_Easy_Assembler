@@ -14,6 +14,7 @@ struct InstEncoder::InstDataEncode {
     std::string rs, rt, rd;
     std::string c;
     std::string funct;
+    bool isValid;
     InstDataEncode() {
         opCode = "";
         rs = "";
@@ -21,6 +22,7 @@ struct InstEncoder::InstDataEncode {
         rd = "";
         c = "";
         funct = "";
+        isValid = false;
     }
 };
 
@@ -42,11 +44,18 @@ void InstEncoder::init(const unsigned &pc) {
 
 unsigned InstEncoder::encodeInst(std::string inst) {
     InstEncoder::InstDataEncode data = analyzeString(inst);
-    pc += 4; // pc offset
+    if (data.isValid) {
+        // pc offset if this inst is valid
+        pc += 4;
+    }
     return 0;
 }
 
 InstEncoder::InstDataEncode InstEncoder::analyzeString(std::string inst) {
+    // if this line is a comment
+    if (isComment(inst)) {
+        return InstEncoder::InstDataEncode();
+    }
     // deal with comma ','
     for (unsigned i = 0; i < inst.length(); ++i) {
         if (inst[i] == ',') {
@@ -69,6 +78,17 @@ InstEncoder::InstDataEncode InstEncoder::analyzeString(std::string inst) {
 
 bool InstEncoder::hasLabel(std::string src) {
     return src.find(":", 0) != std::string::npos;
+}
+
+bool InstEncoder::isComment(std::string src) {
+    for (unsigned i = 0; i < src.length(); ++i) {
+        if (src[i] != ' ' && src[i] != '\t') {
+            if (src[i] == '#') {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 } /* namespace lb */

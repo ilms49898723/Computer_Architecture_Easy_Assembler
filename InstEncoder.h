@@ -30,6 +30,7 @@ public:
 private:
     InstDataEncode analyzeString(std::string inst);
     bool hasLabel(std::string src);
+    bool isComment(std::string src);
 
 private:
     unsigned pc;
