@@ -15,7 +15,6 @@ bool isValidArguments(int& argc, char**& argv) {
     }
     bool hasA = false;
     bool hasD = false;
-    bool hasOutput = false;
     bool hasNoLabel = false;
     for (int i = 1; i < argc; ++i) {
         if (std::string(argv[i]) == "-d" || std::string(argv[i]) == "-D") {
