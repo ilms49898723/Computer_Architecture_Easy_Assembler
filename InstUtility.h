@@ -24,7 +24,8 @@ struct AssemblerArgumentInfo {
     std::string outputFile;
     AssemblerArgumentInfo() {
         hasA = hasD = hasInputFile = hasOutputFile = hasNoLabel = isValid = false;
-        inputFile = outputFile = std::string();
+        inputFile = "";
+        outputFile = "";
     }
 };
 
