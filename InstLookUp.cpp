@@ -186,4 +186,13 @@ std::string InstLookUp::registerLookUpName(const unsigned& src) {
     return InstLookUp::registerLookUpTable[src];
 }
 
+unsigned InstLookUp::translateToReg(const std::string &src) {
+    for (unsigned i = 0; i < 32; ++i) {
+        if (InstLookUp::registerLookUpTable[i] == src) {
+            return i;
+        }
+    }
+    return 0xFFFFFFFFu;
+}
+
 } /* namespace lb */

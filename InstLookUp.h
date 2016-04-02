@@ -27,6 +27,8 @@ public:
     static std::string registerLookUpNumber(const unsigned& src);
     // translate reg -> readable string (ex. t0, a0)
     static std::string registerLookUpName(const unsigned& src);
+    // translate readable string to reg number
+    static unsigned translateToReg(const std::string& src);
 
 private:
     const static std::string opCodeLookUpTable[];
