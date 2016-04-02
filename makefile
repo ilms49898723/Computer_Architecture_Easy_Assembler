@@ -11,10 +11,10 @@ OBJS := InstDataBin.o InstDataStr.o InstDecoder.o \
 all: assembler
 
 assembler: ${OBJS}
-    ${CC} ${CFLAGS} ${OBJS} -o $@
+	${CC} ${CFLAGS} ${OBJS} -o $@
 
 .cpp.o:
-    ${CC} ${CFLAGS} -c $<
+	${CC} ${CFLAGS} -c $<
 
 clean:
-    -rm -f *.o assembler
+	-rm -f *.o assembler
