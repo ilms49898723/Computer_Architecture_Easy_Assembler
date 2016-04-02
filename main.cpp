@@ -7,6 +7,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <utility>
 #include <string>
 #include <vector>
@@ -64,7 +65,7 @@ int main(int argc, char **argv) {
                     int offset;
                     sscanf(c, "%x", &offset);
                     offset = lb::toSigned(static_cast<unsigned>(offset), 16);
-                    offset = (offset << 2 + 4) >> 2;
+                    offset = (offset * 4 + 4) >> 2;
                     if (!labelTable.count(i + offset)) {
                         char temp[1024];
                         sprintf(temp, "%d", labelCount);
@@ -81,7 +82,7 @@ int main(int argc, char **argv) {
                     int offset;
                     sscanf(c, "%x", &offset);
                     offset = lb::toSigned(static_cast<unsigned>(offset), 16);
-                    offset = (offset << 2 + 4) >> 2;
+                    offset = (offset * 4 + 4) >> 2;
                     if (!labelTable.count(i + offset)) {
                         char temp[1024];
                         sprintf(temp, "%d", labelCount);
@@ -129,7 +130,7 @@ int main(int argc, char **argv) {
     else {
         FILE* fin = nullptr;
         FILE *fout = nullptr;
-        fin = fopen(argu.inputFile.c_str(), "rb");
+        fin = fopen(argu.inputFile.c_str(), "r");
         fout = fopen(argu.outputFile.c_str(), "w");
         if (!fin || !fout) {
             fprintf(stderr, "File Open Error!\n");
@@ -137,17 +138,28 @@ int main(int argc, char **argv) {
         }
         unsigned initialPc = 0;
         printf("Initial Value of PC: ");
-        scanf("%u", &initialPc);
+        scanf("%x", &initialPc);
         writeUnsigned(fout, initialPc);
         char inputBuffer[2048];
         lb::InstEncoder instEncoder;
-        std::vector<unsigned> v;
+        std::vector<std::string> inputAssembly;
+        std::vector<unsigned> binary;
+        instEncoder.setPc(initialPc);
         while (fgets(inputBuffer, 2048, fin)) {
-            unsigned ret = instEncoder.encodeInst(inputBuffer);
-            v.push_back(ret);
+            if (inputBuffer[strlen(inputBuffer) - 1] == '\n') {
+                inputBuffer[strlen(inputBuffer) - 1] = '\0';
+            }
+            inputAssembly.push_back(inputBuffer);
         }
-        writeUnsigned(fout, v.size());
-        for (const auto i : v) {
+        for (auto& i : inputAssembly) {
+            instEncoder.preProcess(i);
+        }
+        for (auto&i : inputAssembly) {
+            lb::InstEncodeData ret = instEncoder.encodeInst(i);
+            binary.push_back(ret.inst);
+        }
+        writeUnsigned(fout, binary.size());
+        for (const auto i : binary) {
             writeUnsigned(fout, i);
         }
         fclose(fin);
