@@ -10,12 +10,13 @@
 namespace lb {
 
 bool isValidArguments(int& argc, char**& argv) {
-    if (argc < 2 || argc > 5) {
+    if (argc < 2 || argc > 6) {
         return false;
     }
     bool hasA = false;
     bool hasD = false;
     bool hasOutput = false;
+    bool hasNoLabel = false;
     for (int i = 1; i < argc; ++i) {
         if (std::string(argv[i]) == "-d" || std::string(argv[i]) == "-D") {
             hasD = true;
@@ -23,21 +24,17 @@ bool isValidArguments(int& argc, char**& argv) {
         if (std::string(argv[i]) == "-a" || std::string(argv[i]) == "-A") {
             hasA = true;
         }
+        if (std::string(argv[i]) == "-nolabel") {
+            hasNoLabel = true;
+        }
     }
     if (hasA == hasD) {
         return false;
     }
-    for (int i = 1; i < argc; ++i) {
-        if (std::string(argv[i]) == "-o" || std::string(argv[i]) == "-O") {
-            hasOutput = true;
-        }
+    if (hasA && hasNoLabel) {
+        return false;
     }
-    if (hasOutput) {
-        return argc >= 4 && argc <= 5;
-    }
-    else {
-        return argc >= 2 && argc <= 3;
-    }
+    return argc >= 5 && argc <= 6;
 }
 
 AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
@@ -65,6 +62,10 @@ AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
             else {
                 return AssemblerArgumentInfo();
             }
+        }
+        if (std::string(argv[i]) == "-nolabel") {
+            ret.hasNoLabel = true;
+            usedArguments[i] = true;
         }
     }
     for (int i = 1; i < argc; ++i) {
