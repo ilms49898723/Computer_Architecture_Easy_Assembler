@@ -18,33 +18,44 @@
 
 namespace lb {
 
+struct InstEncodeData {
+    unsigned inst;
+    bool isValid;
+    InstEncodeData() :
+            inst(0xFFFFFFFFu), isValid(false) {}
+    InstEncodeData(const unsigned& inst, const bool& isValid) :
+            inst(inst), isValid(isValid) {}
+};
+
 class InstEncoder {
-private:
-    struct InstDataEncode;
 
 public:
     InstEncoder();
     virtual ~InstEncoder();
     void init();
-    unsigned encodeInst(const std::string& inst);
+    void setPc(const unsigned& pc);
+    void preProcess(std::string &src);
+    InstEncodeData encodeInst(const std::string& inst);
 
 private:
-    unsigned analyzeString(std::string inst);
-    InstType getInstType(const std::string& inst);
+    InstEncodeData analyzeString(std::string inst);
     unsigned getReg(const std::string &src);
     unsigned getC(const std::string& src);
     unsigned getBranchC(const std::string& src);
+    InstType getInstType(const std::string& inst);
     bool hasLabel(const std::string& src);
     bool isComment(const std::string& src);
-    std::string processInputString(const std::string &inst);
-    std::string toLowerString(const std::string& src);
     std::string nextString(std::string& src);
+    std::string opToLower(const std::string &src);
+    std::string toLowerString(const std::string &src);
+    std::string processInputString(const std::string &inst);
     std::string trimWhiteSpace(const std::string& src);
+    std::string trimLeadingWhiteSpace(const std::string &src);
 
 private:
     int line;
-    bool alive;
     unsigned pc;
+    unsigned preprocessPc;
     std::map<std::string, int> labelTable;
 };
 
