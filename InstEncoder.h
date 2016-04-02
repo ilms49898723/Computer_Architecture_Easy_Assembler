@@ -9,10 +9,12 @@
 #define INSTENCODER_H_
 
 #include <cstdio>
+#include <cctype>
 #include <string>
 #include <map>
 #include <utility>
 #include "InstLookUp.h"
+#include "InstUtility.h"
 
 namespace lb {
 
@@ -24,15 +26,24 @@ public:
     InstEncoder();
     virtual ~InstEncoder();
     void init();
-    void init(const unsigned& pc);
-    unsigned encodeInst(std::string inst);
+    unsigned encodeInst(const std::string& inst);
 
 private:
-    InstDataEncode analyzeString(std::string inst);
-    bool hasLabel(std::string src);
-    bool isComment(std::string src);
+    unsigned analyzeString(std::string inst);
+    InstType getInstType(const std::string& inst);
+    unsigned getReg(const std::string &src);
+    unsigned getC(const std::string& src);
+    unsigned getBranchC(const std::string& src);
+    bool hasLabel(const std::string& src);
+    bool isComment(const std::string& src);
+    std::string processInputString(const std::string &inst);
+    std::string toLowerString(const std::string& src);
+    std::string nextString(std::string& src);
+    std::string trimWhiteSpace(const std::string& src);
 
 private:
+    int line;
+    bool alive;
     unsigned pc;
     std::map<std::string, int> labelTable;
 };
