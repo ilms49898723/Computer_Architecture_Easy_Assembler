@@ -132,8 +132,12 @@ int main(int argc, char **argv) {
         FILE *fout = nullptr;
         fin = fopen(argu.inputFile.c_str(), "r");
         fout = fopen(argu.outputFile.c_str(), "w");
-        if (!fin || !fout) {
-            fprintf(stderr, "File Open Error!\n");
+        if (!fin) {
+            fprintf(stderr, "Error: %s File Not Exist!\n", argu.inputFile.c_str());
+            exit(EXIT_FAILURE);
+        }
+        if (!fout) {
+            fprintf(stderr, "Error: %s File Not Exist!\n", argu.outputFile.c_str());
             exit(EXIT_FAILURE);
         }
         unsigned initialPc = 0;
@@ -159,7 +163,7 @@ int main(int argc, char **argv) {
             binary.push_back(ret.inst);
         }
         writeUnsigned(fout, static_cast<unsigned>(binary.size()));
-        for (const auto i : binary) {
+        for (const auto& i : binary) {
             writeUnsigned(fout, i);
         }
         fclose(fin);
