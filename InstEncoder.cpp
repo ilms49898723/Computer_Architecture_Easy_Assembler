@@ -1,6 +1,9 @@
-//
-// Created by LittleBird on 2016/04/02.
-//
+/*
+ * InstEncoder.cpp
+ *
+ *  Created on: 2016/04/12
+ *      Author: LittleBird
+ */
 
 #include "InstEncoder.h"
 
@@ -26,7 +29,6 @@ InstEncoder::InstEncoder() {
 
 InstEncoder::~InstEncoder() {
 }
-
 
 void InstEncoder::init() {
     labelTable.clear();
@@ -69,4 +71,4 @@ bool InstEncoder::hasLabel(std::string src) {
     return src.find(":", 0) != std::string::npos;
 }
 
-}
+} /* namespace lb */

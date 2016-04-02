@@ -1,5 +1,5 @@
 /*
- * InstDataBin.h
+ * InstEncoder.h
  *
  *  Created on: 2016/04/12
  *      Author: LittleBird
