@@ -27,9 +27,9 @@ void InstEncoder::setPc(const unsigned &pc) {
     this->preprocessPc = pc;
 }
 
-void InstEncoder::preProcess(std::string &src) {
+std::string InstEncoder::preProcess(std::string &src) {
     if (isComment(src)) {
-        return;
+        return "";
     }
     if (hasLabel(src)) {
         for (unsigned i = 0; i < src.length(); ++i) {
@@ -39,14 +39,14 @@ void InstEncoder::preProcess(std::string &src) {
                 src = trimLeadingWhiteSpace(src);
                 labelTable.insert(make_pair(label, preprocessPc));
                 preprocessPc += 4;
-                return;
+                return label;
             }
         }
     }
     else {
         src = trimLeadingWhiteSpace(src);
         preprocessPc += 4;
-        return;
+        return "";
     }
 }
 

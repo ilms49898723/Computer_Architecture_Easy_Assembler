@@ -34,7 +34,7 @@ public:
     virtual ~InstEncoder();
     void init();
     void setPc(const unsigned& pc);
-    void preProcess(std::string &src);
+    std::string preProcess(std::string &src);
     InstEncodeData encodeInst(const std::string& inst);
 
 private:
