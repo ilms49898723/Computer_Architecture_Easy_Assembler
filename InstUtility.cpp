@@ -38,10 +38,11 @@ bool isValidArguments(int& argc, char**& argv) {
 
 int fwriteUnsigned(FILE *fout, const unsigned &src) {
     unsigned char buffer[4];
-    buffer[0] = static_cast<unsigned char>((src & 0xFF000000u) >> 24);
-    buffer[1] = static_cast<unsigned char>((src & 0x00FF0000u) >> 16);
-    buffer[2] = static_cast<unsigned char>((src & 0x0000FF00u) >> 8);
-    buffer[3] = static_cast<unsigned char>((src & 0x000000FFu));
+    buffer[0] = static_cast<unsigned char>((src >> 24) & 0xFFu);
+    buffer[1] = static_cast<unsigned char>((src >> 16) & 0xFFu);
+    buffer[2] = static_cast<unsigned char>((src >> 8) & 0xFFu);
+    buffer[3] = static_cast<unsigned char>(src & 0xFFu);
+    printf("write %02x%02x%02x%02x\n", buffer[0], buffer[1], buffer[2], buffer[3]);
     return fwrite(buffer, sizeof(unsigned char), 4, fout);
 }
 
