@@ -18,13 +18,14 @@
 #include "InstImageReader.h"
 
 int main(int argc, char **argv) {
-    if (argc == 2 && std::string(argv[1]) == "-h") {
-        printf("-a for assembler, -d for disassembler\n");
+    if (argc == 2 && (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")) {
+        printf("usage: %s [option] mode -a InputFile -o OutputFile\n", argv[0]);
+        printf("option:\n    -nolabel: don\'t use label in branch instructions(ex. beq)\n");
+        printf("              only avaliable in mode disassembler\n");
+        printf("mode:\n    -a: assembler\n    -d: disassembler\n\n");
         printf("ex.\n");
-        printf("    %s -a InputFilePath -o OutputFilePath\n", argv[0]);
-        printf("    %s -d InputFilePath -o OutputFilePath\n", argv[0]);
-        printf("option:\n-nolabel: don\'t print label in branch instructions like beq\n");
-        printf("ex.\n    beq $t0, $t0, LABEL1 --> beq $t0, $t0, 0x0");
+        printf("    %s -a InputFile -o OutputFile\n", argv[0]);
+        printf("    %s -d InputFile -o OutputFile\n", argv[0]);
         printf("\n");
         exit(EXIT_SUCCESS);
     }
