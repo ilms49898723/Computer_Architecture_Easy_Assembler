@@ -55,6 +55,9 @@ std::string toHexString(const Tp& val) {
 // check main arguments for easy assembler
 bool isValidArguments(int& argc, char**& argv);
 
+// write an unsigned int to file(big endian)
+int fwriteUnsigned(FILE* fout, const unsigned& src);
+
 // analyze main arguments
 AssemblerArgumentInfo processArguments(int& argc, char**& argv);
 

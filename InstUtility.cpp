@@ -36,6 +36,15 @@ bool isValidArguments(int& argc, char**& argv) {
     return argc >= 5 && argc <= 6;
 }
 
+int fwriteUnsigned(FILE *fout, const unsigned &src) {
+    unsigned char buffer[4];
+    buffer[0] = static_cast<unsigned char>((src & 0xFF000000u) >> 24);
+    buffer[1] = static_cast<unsigned char>((src & 0x00FF0000u) >> 16);
+    buffer[2] = static_cast<unsigned char>((src & 0x0000FF00u) >> 8);
+    buffer[3] = static_cast<unsigned char>((src & 0x000000FFu));
+    return fwrite(buffer, sizeof(unsigned char), 4, fout);
+}
+
 AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
     if (!isValidArguments(argc, argv)) {
         return AssemblerArgumentInfo();

@@ -17,8 +17,6 @@
 #include "InstDecoder.h"
 #include "InstImageReader.h"
 
-inline void writeUnsigned(FILE* fout, const unsigned& src);
-
 int main(int argc, char **argv) {
     if (argc == 2 && std::string(argv[1]) == "-h") {
         printf("-a for assembler, -d for disassembler\n");
@@ -143,7 +141,7 @@ int main(int argc, char **argv) {
         unsigned initialPc = 0;
         printf("Initial Value of PC: ");
         scanf("%x", &initialPc);
-        writeUnsigned(fout, initialPc);
+        lb::fwriteUnsigned(fout, initialPc);
         char inputBuffer[2048];
         lb::InstEncoder instEncoder;
         std::vector<std::string> inputAssembly;
@@ -162,21 +160,12 @@ int main(int argc, char **argv) {
             lb::InstEncodeData ret = instEncoder.encodeInst(i);
             binary.push_back(ret.inst);
         }
-        writeUnsigned(fout, static_cast<unsigned>(binary.size()));
+        lb::fwriteUnsigned(fout, static_cast<unsigned>(binary.size()));
         for (const auto& i : binary) {
-            writeUnsigned(fout, i);
+            lb::fwriteUnsigned(fout, i);
         }
         fclose(fin);
         fclose(fout);
         exit(EXIT_SUCCESS);
     }
-}
-
-inline void writeUnsigned(FILE *fout, const unsigned &src) {
-    unsigned char buffer[4];
-    buffer[0] = static_cast<unsigned char>((src & 0xFF000000u) >> 24);
-    buffer[1] = static_cast<unsigned char>((src & 0x00FF0000u) >> 16);
-    buffer[2] = static_cast<unsigned char>((src & 0x0000FF00u) >> 8);
-    buffer[3] = static_cast<unsigned char>((src & 0x000000FFu));
-    fwrite(buffer, sizeof(unsigned char), 4, fout);
 }
