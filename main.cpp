@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
         FILE* fin = nullptr;
         FILE *fout = nullptr;
         fin = fopen(argu.inputFile.c_str(), "r");
-        fout = fopen(argu.outputFile.c_str(), "w");
+        fout = fopen(argu.outputFile.c_str(), "wb");
         if (!fin) {
             fprintf(stderr, "Error: %s File Not Exist!\n", argu.inputFile.c_str());
             exit(EXIT_FAILURE);
@@ -139,8 +139,8 @@ int main(int argc, char **argv) {
             exit(EXIT_FAILURE);
         }
         unsigned initialPc = 0;
-        printf("Initial Value of PC: ");
-        scanf("%x", &initialPc);
+//        printf("Initial Value of PC: ");
+//        scanf("%x", &initialPc);
         lb::fwriteUnsigned(fout, initialPc);
         char inputBuffer[2048];
         lb::InstEncoder instEncoder;
@@ -157,9 +157,12 @@ int main(int argc, char **argv) {
             instEncoder.preProcess(i);
         }
         for (auto&i : inputAssembly) {
+            printf("Process %s", i.c_str());
             lb::InstEncodeData ret = instEncoder.encodeInst(i);
             binary.push_back(ret.inst);
+            printf(" = %08x\n", ret.inst);
         }
+        printf("length = %d\n", binary.size());
         lb::fwriteUnsigned(fout, static_cast<unsigned>(binary.size()));
         for (const auto& i : binary) {
             lb::fwriteUnsigned(fout, i);
