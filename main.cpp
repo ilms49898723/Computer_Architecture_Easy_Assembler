@@ -153,8 +153,11 @@ int main(int argc, char **argv) {
             }
             inputAssembly.push_back(inputBuffer);
         }
-        for (auto& i : inputAssembly) {
-            instEncoder.preProcess(i);
+        for (auto i = 0; i < inputAssembly.size(); ++i) {
+            std::string ret = instEncoder.preProcess(inputAssembly[i]);
+            if (ret != "") {
+                printf("label %s at line %d\n", ret.c_str(), i + 1);
+            }
         }
         for (auto&i : inputAssembly) {
             printf("Process %s", i.c_str());
