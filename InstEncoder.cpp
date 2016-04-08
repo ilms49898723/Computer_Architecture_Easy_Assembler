@@ -178,8 +178,17 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
     }
     else if (instType == InstType::J) {
         unsigned opCode = InstLookUp::translateToOpCode(op);
-        unsigned c = static_cast<unsigned>(labelTable[nextString(inst)]);
+        unsigned c;
         unsigned ret = 0u;
+        std::string next = nextString(inst);
+        if (isNumber(next)) {
+            int temp;
+            sscanf(next.c_str(), "%d", &temp);
+            c = static_cast<unsigned>(temp);
+        }
+        else {
+            c = static_cast<unsigned>(labelTable[next]);
+        }
         ret |= (opCode & 0x3Fu) << 26;
         ret |= (c & 0x3FFFFFFu);
         return InstEncodeData(ret, true);
@@ -295,6 +304,15 @@ bool InstEncoder::isComment(const std::string& src) {
         }
     }
     return false;
+}
+
+bool InstEncoder::isNumber(const std::string &src) {
+    for (unsigned i = 0; i < src.length(); ++i) {
+        if (!isdigit(src[i])) {
+            return false;
+        }
+    }
+    return true;
 }
 
 std::string InstEncoder::nextString(std::string &src) {

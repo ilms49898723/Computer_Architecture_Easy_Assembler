@@ -45,6 +45,7 @@ private:
     InstType getInstType(const std::string& inst);
     bool hasLabel(const std::string& src);
     bool isComment(const std::string& src);
+    bool isNumber(const std::string& src);
     std::string nextString(std::string& src);
     std::string opToLower(const std::string &src);
     std::string toLowerString(const std::string &src);
