@@ -48,6 +48,7 @@ std::string InstEncoder::preProcess(std::string &src) {
         preprocessPc += 4;
         return "";
     }
+    return "";
 }
 
 InstEncodeData InstEncoder::encodeInst(const std::string& inst) {
@@ -292,7 +293,7 @@ InstType InstEncoder::getInstType(const std::string& inst) {
 }
 
 bool InstEncoder::hasLabel(const std::string& src) {
-    return src.find(":", 0) != std::string::npos;
+    return src.find(":") != std::string::npos;
 }
 
 bool InstEncoder::isComment(const std::string& src) {
