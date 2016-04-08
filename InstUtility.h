@@ -19,11 +19,14 @@ struct AssemblerArgumentInfo {
     bool hasInputFile;
     bool hasOutputFile;
     bool hasNoLabel;
+    bool hasInitPc;
     bool isValid;
+    int initPc;
     std::string inputFile;
     std::string outputFile;
     AssemblerArgumentInfo() {
-        hasA = hasD = hasInputFile = hasOutputFile = hasNoLabel = isValid = false;
+        hasA = hasD = hasInputFile = hasOutputFile = hasNoLabel = hasInitPc = isValid = false;
+        initPc = 0;
         inputFile = "";
         outputFile = "";
     }

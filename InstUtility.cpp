@@ -10,12 +10,13 @@
 namespace lb {
 
 bool isValidArguments(int& argc, char**& argv) {
-    if (argc < 2 || argc > 6) {
+    if (argc < 2 || argc > 7) {
         return false;
     }
     bool hasA = false;
     bool hasD = false;
     bool hasNoLabel = false;
+    bool hasInitPc = false;
     for (int i = 1; i < argc; ++i) {
         if (std::string(argv[i]) == "-d" || std::string(argv[i]) == "-D") {
             hasD = true;
@@ -26,6 +27,9 @@ bool isValidArguments(int& argc, char**& argv) {
         if (std::string(argv[i]) == "-nolabel") {
             hasNoLabel = true;
         }
+        if (std::string(argv[i]) == "-pc") {
+            hasInitPc = true;
+        }
     }
     if (hasA == hasD) {
         return false;
@@ -33,7 +37,10 @@ bool isValidArguments(int& argc, char**& argv) {
     if (hasA && hasNoLabel) {
         return false;
     }
-    return argc >= 5 && argc <= 6;
+    if (hasD && hasInitPc) {
+        return false;
+    }
+    return argc >= 5 && argc <= 7;
 }
 
 int fwriteUnsigned(FILE *fout, const unsigned &src) {
@@ -66,6 +73,24 @@ AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
             usedArguments[i] = true;
             if (i + 1 < argc) {
                 ret.outputFile = argv[i + 1];
+                usedArguments[i + 1] = true;
+            }
+            else {
+                return AssemblerArgumentInfo();
+            }
+        }
+        if (std::string(argv[i]) == "-pc" || std::string(argv[i]) == "-PC") {
+            ret.hasInitPc = true;
+            usedArguments[i] = true;
+            if (i + 1 < argc) {
+                for (int j = 0; argv[i + 1][j]; ++j) {
+                    if (!isdigit(argv[i + 1][j])) {
+                        return AssemblerArgumentInfo();
+                    }
+                }
+                if (sscanf(argv[i + 1], "%d", &ret.initPc) != 1) {
+                    return AssemblerArgumentInfo();
+                }
                 usedArguments[i + 1] = true;
             }
             else {
