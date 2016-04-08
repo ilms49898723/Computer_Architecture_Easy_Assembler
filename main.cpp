@@ -20,8 +20,11 @@
 int main(int argc, char **argv) {
     if (argc == 2 && (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")) {
         printf("usage: %s [option] mode -a InputFile -o OutputFile\n", argv[0]);
-        printf("option:\n    -nolabel: don\'t use label in branch instructions(ex. beq)\n");
-        printf("              only avaliable in mode disassembler\n");
+        printf("option:\n");
+        printf("     -nolabel: don\'t use label in branch instructions(ex. beq)\n");
+        printf("               only available in mode disassembler\n");
+        printf("    -pc value: specify initial pc = value\n");
+        printf("               only available in mode assembler\n");
         printf("mode:\n    -a: assembler\n    -d: disassembler\n\n");
         printf("ex.\n");
         printf("    %s -a InputFile -o OutputFile\n", argv[0]);
@@ -31,11 +34,11 @@ int main(int argc, char **argv) {
     }
     lb::AssemblerArgumentInfo argu = lb::processArguments(argc, argv);
     if (!argu.isValid) {
-        fprintf(stderr, "Invalid Arguments.\n%s -h for more information.\n", argv[0]);
+        fprintf(stderr, "Invalid Arguments.\n%s -h or --help for more information.\n", argv[0]);
         exit(EXIT_FAILURE);
     }
     printf("--Info--\n");
-    printf("Mode: %s\n", (argu.hasD) ? "Disassembler" : "Assembler");
+    printf("Mode: %s\n", (argu.hasA) ? "Assembler" : "Disassembler");
     printf("InputFile: %s\n", (argu.hasInputFile) ? argu.inputFile.c_str() : "N/A");
     printf("OutputFile: %s\n", (argu.hasOutputFile) ? argu.outputFile.c_str() : "N/A");
     if (argu.hasD) {
@@ -140,8 +143,9 @@ int main(int argc, char **argv) {
             exit(EXIT_FAILURE);
         }
         unsigned initialPc = 0;
-//        printf("Initial Value of PC: ");
-//        scanf("%x", &initialPc);
+        if (argu.hasInitPc) {
+            initialPc = static_cast<unsigned>(argu.initPc);
+        }
         lb::fwriteUnsigned(fout, initialPc);
         char inputBuffer[2048];
         lb::InstEncoder instEncoder;
