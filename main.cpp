@@ -36,18 +36,25 @@ int main(int argc, char **argv) {
     }
     lb::AssemblerArgumentInfo argu = lb::processArguments(argc, argv);
     if (!argu.isValid) {
-        fprintf(stderr, "Invalid Arguments.\n%s -h or --help for more information.\n", argv[0]);
+        fprintf(stderr, "Invalid Arguments.\nUse %s -h or --help for more information.\n", argv[0]);
         exit(EXIT_FAILURE);
     }
     printf("--Info--\n");
     printf("Mode: %s\n", (argu.hasA) ? "Assembler" : "Disassembler");
     printf("InputFile: %s\n", (argu.hasInputFile) ? argu.inputFile.c_str() : "N/A");
     printf("OutputFile: %s\n", (argu.hasOutputFile) ? argu.outputFile.c_str() : "N/A");
+    printf("--Info--\n");
     if (argu.hasD) {
+        FILE* fin = nullptr;
+        fin = fopen(argu.inputFile.c_str(), "rb");
+        if (!fin) {
+            fprintf(stderr, "%s: %s\n", argu.inputFile.c_str(), strerror(errno));
+            exit(EXIT_FAILURE);
+        }
         FILE* fout = nullptr;
         fout = fopen(argu.outputFile.c_str(), "w");
         if (!fout) {
-            fprintf(stderr, "File Open Error!\n");
+            fprintf(stderr, "%s: %s\n", argu.outputFile.c_str(), strerror(errno));
             exit(EXIT_FAILURE);
         }
         std::vector<std::string> assembly;
@@ -55,7 +62,7 @@ int main(int argc, char **argv) {
         int labelCount = 0;
         unsigned len, pc;
         unsigned inst[1024];
-        len = lb::InstImageReader::readImageI(argu.inputFile.c_str(), inst, &pc);
+        len = lb::InstImageReader::readImageI(fin, inst, &pc);
         for (unsigned i = 0; i < len; ++i) {
             assembly.push_back(lb::InstDecoder::decodeInstStr(inst[i]).toString());
         }
@@ -134,14 +141,14 @@ int main(int argc, char **argv) {
     else {
         FILE* fin = nullptr;
         FILE *fout = nullptr;
-        fin = fopen(argu.inputFile.c_str(), "r");
+        fin = fopen(argu.inputFile.c_str(), "rt");
         fout = fopen(argu.outputFile.c_str(), "wb");
         if (!fin) {
-            fprintf(stderr, "Error: %s File Not Exist!\n", argu.inputFile.c_str());
+            fprintf(stderr, "%s: %s\n", argu.inputFile.c_str(), strerror(errno));
             exit(EXIT_FAILURE);
         }
         if (!fout) {
-            fprintf(stderr, "Error: %s File Not Exist!\n", argu.outputFile.c_str());
+            fprintf(stderr, "%s: %s\n", argu.outputFile.c_str(), strerror(errno));
             exit(EXIT_FAILURE);
         }
         unsigned initialPc = 0;
@@ -160,7 +167,7 @@ int main(int argc, char **argv) {
             }
             inputAssembly.push_back(inputBuffer);
         }
-        for (auto i = 0; i < inputAssembly.size(); ++i) {
+        for (auto i = 0u; i < inputAssembly.size(); ++i) {
             std::string ret = instEncoder.preProcess(inputAssembly[i]);
             if (ret != "") {
                 printf("label %s at line %d\n", ret.c_str(), i + 1);
