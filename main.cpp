@@ -169,15 +169,10 @@ int main(int argc, char **argv) {
         }
         for (auto i = 0u; i < inputAssembly.size(); ++i) {
             std::string ret = instEncoder.preProcess(inputAssembly[i]);
-            if (ret != "") {
-                printf("label %s at line %d\n", ret.c_str(), i + 1);
-            }
         }
         for (auto&i : inputAssembly) {
-            printf("Process %s", i.c_str());
             lb::InstEncodeData ret = instEncoder.encodeInst(i);
             binary.push_back(ret.inst);
-            printf(" = %08x\n", ret.inst);
         }
         lb::fwriteUnsigned(fout, static_cast<unsigned>(binary.size()));
         for (const auto& i : binary) {
