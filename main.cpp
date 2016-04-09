@@ -19,13 +19,15 @@
 
 int main(int argc, char **argv) {
     if (argc == 2 && (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")) {
-        printf("usage: %s [option] mode -a InputFile -o OutputFile\n", argv[0]);
+        printf("usage: %s [option] mode InputFile -o OutputFile\n", argv[0]);
         printf("option:\n");
-        printf("    -nolabel: don\'t use label in branch instructions(ex. beq)\n");
-        printf("               only available in mode disassembler\n");
-        printf("    -pc value: specify initial pc = value\n");
+        printf("    -nolabel: when disassembling, don\'t use label in branch instructions(ex. beq)\n");
+        printf("              only available in mode disassembler\n");
+        printf("    -pc value: specify initial pc value\n");
         printf("               only available in mode assembler\n");
-        printf("mode:\n    -a: assembler\n    -d: disassembler\n\n");
+        printf("mode:\n");
+        printf("-a: assembler\n");
+        printf("-d: disassembler\n\n");
         printf("ex.\n");
         printf("    %s -a InputFile -o OutputFile\n", argv[0]);
         printf("    %s -d InputFile -o OutputFile\n", argv[0]);
