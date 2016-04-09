@@ -8,6 +8,7 @@
 #ifndef INSTUTILITY_H_
 #define INSTUTILITY_H_
 
+#include <cstring>
 #include <sstream>
 #include <string>
 #include "InstEnum.h"

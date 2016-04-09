@@ -58,8 +58,9 @@ AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
         return AssemblerArgumentInfo();
     }
     AssemblerArgumentInfo ret;
-    bool usedArguments[10] = { false } ;
-    for (int i = 1; i < argc && i < 10; ++i) {
+    bool usedArguments[15];
+    memset(usedArguments, false, sizeof(bool) * 15);
+    for (int i = 1; i < 15 && i < argc; ++i) {
         if (std::string(argv[i]) == "-a" || std::string(argv[i]) == "-A") {
             ret.hasA = true;
             usedArguments[i] = true;
