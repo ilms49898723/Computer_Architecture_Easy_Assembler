@@ -15,6 +15,7 @@
 #include "InstUtility.h"
 #include "InstEncoder.h"
 #include "InstDecoder.h"
+#include "InstDisassembler.h"
 #include "InstImageReader.h"
 
 int main(int argc, char **argv) {
@@ -57,82 +58,15 @@ int main(int argc, char **argv) {
             fprintf(stderr, "%s: %s\n", argu.outputFile.c_str(), strerror(errno));
             exit(EXIT_FAILURE);
         }
-        std::vector<std::string> assembly;
-        std::map<int, std::string> labelTable;
-        int labelCount = 0;
         unsigned len, pc;
         unsigned inst[1024];
         len = lb::InstImageReader::readImageI(fin, inst, &pc);
+        lb::InstDisassembler disassembler;
+        disassembler.setUseLabel(!argu.hasNoLabel);
+        disassembler.init(inst, len, pc);
+        disassembler.start();
         for (unsigned i = 0; i < len; ++i) {
-            assembly.push_back(lb::InstDecoder::decodeInstStr(inst[i]).toString());
-        }
-        if (!argu.hasNoLabel) {
-            for (unsigned i = 0; i < assembly.size(); ++i) {
-                std::string &current = assembly[i];
-                if (current.find("beq") != std::string::npos ||
-                    current.find("bne") != std::string::npos) {
-                    char op[1024], rs[1024], rt[1024], c[1024];
-                    sscanf(current.c_str(), "%s%s%s%s", op, rs, rt, c);
-                    int offset;
-                    sscanf(c, "%x", &offset);
-                    offset = lb::toSigned(static_cast<unsigned>(offset), 16);
-                    offset = (offset * 4 + 4) >> 2;
-                    if (!labelTable.count(i + offset)) {
-                        char temp[1024];
-                        sprintf(temp, "%d", labelCount);
-                        ++labelCount;
-                        std::string newLabel = "L" + std::string(temp);
-                        labelTable.insert(std::make_pair(i + offset, newLabel));
-                    }
-                    current = std::string(op) + " " + std::string(rs) + " " + std::string(rt) + " " +
-                              labelTable[i + offset];
-                }
-                else if (current.find("bgtz") != std::string::npos) {
-                    char op[1024], rs[1024], c[1024];
-                    sscanf(current.c_str(), "%s%s%s", op, rs, c);
-                    int offset;
-                    sscanf(c, "%x", &offset);
-                    offset = lb::toSigned(static_cast<unsigned>(offset), 16);
-                    offset = (offset * 4 + 4) >> 2;
-                    if (!labelTable.count(i + offset)) {
-                        char temp[1024];
-                        sprintf(temp, "%d", labelCount);
-                        ++labelCount;
-                        std::string newLabel = "L" + std::string(temp);
-                        labelTable.insert(std::make_pair(i + offset, newLabel));
-                    }
-                    current = std::string(op) + " " + std::string(rs) + " " + labelTable[i + offset];
-                }
-                else if (current.find("j") != std::string::npos ||
-                         current.find("jal") != std::string::npos) {
-                    char op[1024], c[1024];
-                    sscanf(current.c_str(), "%s%s", op, c);
-                    int offset;
-                    sscanf(c, "%x", &offset);
-                    if (!labelTable.count(i + offset)) {
-                        char temp[1024];
-                        sprintf(temp, "%d", labelCount);
-                        ++labelCount;
-                        std::string newLabel = "L" + std::string(temp);
-                        labelTable.insert(std::make_pair(i + offset, newLabel));
-                    }
-                    current = std::string(op) + " " + labelTable[i + offset];
-                }
-            }
-        }
-        for (unsigned i = 0; i < assembly.size(); ++i) {
-            if (!argu.hasNoLabel) {
-                if (labelTable.count(i)) {
-                    for (unsigned long long j = labelTable[i].length(); j < 4; ++j) {
-                        fprintf(fout, " ");
-                    }
-                    fprintf(fout, "%s: ", labelTable[i].c_str());
-                }
-                else {
-                    fprintf(fout, "      ");
-                }
-            }
-            fprintf(fout, "%s\n", assembly[i].c_str());
+            printf("%s\n", disassembler.getLine(i).c_str());
         }
         printf("Finished.\n");
         fclose(fout);
