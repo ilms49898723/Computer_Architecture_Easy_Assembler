@@ -68,7 +68,6 @@ int main(int argc, char **argv) {
         for (unsigned i = 0; i < len; ++i) {
             printf("%s\n", disassembler.getLine(i).c_str());
         }
-        printf("Finished.\n");
         fclose(fout);
         exit(EXIT_SUCCESS);
     }
