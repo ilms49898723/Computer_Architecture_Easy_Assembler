@@ -15,6 +15,7 @@ InstDataBin::InstDataBin() {
 }
 
 InstDataBin::~InstDataBin() {
+
 }
 
 InstType InstDataBin::getType() const {

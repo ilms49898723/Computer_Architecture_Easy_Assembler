@@ -14,6 +14,7 @@ InstEncoder::InstEncoder() {
 }
 
 InstEncoder::~InstEncoder() {
+
 }
 
 void InstEncoder::init() {

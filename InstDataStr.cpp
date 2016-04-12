@@ -11,10 +11,11 @@ namespace lb {
 
 InstDataStr::InstDataStr() {
     type = InstType::Undef;
-    opCode = rs = rt = rd = c = funct = std::string();
+    opCode = rs = rt = rd = c = funct = "";
 }
 
 InstDataStr::~InstDataStr() {
+
 }
 
 InstType InstDataStr::getType() const {
@@ -27,21 +28,21 @@ std::string InstDataStr::getOpCode() const {
 
 std::string InstDataStr::getRs() const {
     if (type == InstType::J || type == InstType::S) {
-        return std::string();
+        return "";
     }
     return rs;
 }
 
 std::string InstDataStr::getRt() const {
     if (type == InstType::J || type == InstType::S) {
-        return std::string();
+        return "";
     }
     return rt;
 }
 
 std::string InstDataStr::getRd() const {
     if (type != InstType::R) {
-        return std::string();
+        return "";
     }
     return rd;
 }
@@ -52,7 +53,7 @@ std::string InstDataStr::getC() const {
 
 std::string InstDataStr::getFunct() const {
     if (type != InstType::R) {
-        return std::string();
+        return "";
     }
     return funct;
 }
