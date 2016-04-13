@@ -15,6 +15,7 @@
 #include "InstUtility.h"
 #include "InstEncoder.h"
 #include "InstDecoder.h"
+#include "InstAssembler.h"
 #include "InstDisassembler.h"
 #include "InstImageReader.h"
 
@@ -88,29 +89,17 @@ int main(int argc, char **argv) {
         if (argu.hasInitPc) {
             initialPc = static_cast<unsigned>(argu.initPc);
         }
-        lb::fwriteUnsigned(fout, initialPc);
+        lb::InstAssembler assembler;
+        assembler.init(fout);
+        assembler.setInitialPc(initialPc);
         char inputBuffer[2048];
-        lb::InstEncoder instEncoder;
-        std::vector<std::string> inputAssembly;
-        std::vector<unsigned> binary;
-        instEncoder.setPc(initialPc);
         while (fgets(inputBuffer, 2048, fin)) {
             if (inputBuffer[strlen(inputBuffer) - 1] == '\n') {
                 inputBuffer[strlen(inputBuffer) - 1] = '\0';
             }
-            inputAssembly.push_back(inputBuffer);
+            assembler.insert(inputBuffer);
         }
-        for (auto i = 0u; i < inputAssembly.size(); ++i) {
-            std::string ret = instEncoder.preProcess(inputAssembly[i]);
-        }
-        for (auto&i : inputAssembly) {
-            lb::InstEncodeData ret = instEncoder.encodeInst(i);
-            binary.push_back(ret.inst);
-        }
-        lb::fwriteUnsigned(fout, static_cast<unsigned>(binary.size()));
-        for (const auto& i : binary) {
-            lb::fwriteUnsigned(fout, i);
-        }
+        assembler.start();
         fclose(fin);
         fclose(fout);
         exit(EXIT_SUCCESS);
