@@ -19,6 +19,6 @@ set(SOURCE_FILES
     InstUtility.cpp
     InstUtility.h
     InstEncoder.cpp
-    InstEncoder.h InstDisassembler.cpp InstDisassembler.h)
+    InstEncoder.h InstDisassembler.cpp InstDisassembler.h InstAssembler.cpp InstAssembler.h)
 
 add_executable(Computer_Architecture_Easy_Assembler ${SOURCE_FILES})
