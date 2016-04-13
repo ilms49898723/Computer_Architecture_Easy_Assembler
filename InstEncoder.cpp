@@ -206,9 +206,10 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
 
 unsigned InstEncoder::getReg(const std::string &src) {
     std::string tmp = toLowerString(src);
-    if (tmp[0] == '$') {
-        tmp = tmp.substr(1);
+    if (tmp[0] != '$') {
+        return 0xFFFFFFFF;
     }
+    tmp = tmp.substr(1);
     unsigned regNum;
     if (isdigit(tmp[0])) {
         sscanf(tmp.c_str(), "%u", &regNum);
@@ -221,7 +222,7 @@ unsigned InstEncoder::getReg(const std::string &src) {
 
 unsigned InstEncoder::getC(const std::string &src) {
     unsigned ret;
-    if (src.find("0x") != std::string::npos) {
+    if (src.find("0x") != std::string::npos || src.find("0X") != std::string::npos) {
         sscanf(src.c_str(), "%x", &ret);
     }
     else {
