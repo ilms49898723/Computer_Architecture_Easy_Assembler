@@ -120,5 +120,4 @@ std::string InstDisassembler::getLine(const unsigned &line) {
     return result[line];
 }
 
-
 }
