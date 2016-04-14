@@ -41,11 +41,6 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Invalid Arguments.\nUse %s -h or --help for more information.\n", argv[0]);
         exit(EXIT_FAILURE);
     }
-    printf("--Info--\n");
-    printf("Mode: %s\n", (argu.hasA) ? "Assembler" : "Disassembler");
-    printf("InputFile: %s\n", (argu.hasInputFile) ? argu.inputFile.c_str() : "N/A");
-    printf("OutputFile: %s\n", (argu.hasOutputFile) ? argu.outputFile.c_str() : "N/A");
-    printf("--Info--\n");
     if (argu.hasD) {
         FILE* fin = nullptr;
         fin = fopen(argu.inputFile.c_str(), "rb");
