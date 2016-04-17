@@ -37,7 +37,12 @@ void InstDisassembler::start() {
         result[i] = "";
     }
     for (unsigned i = 0; i < len; ++i) {
-        assembly.push_back(lb::InstDecoder::decodeInstStr(inst[i]).toString());
+        InstDataStr ret = InstDecoder::decodeInstStr(inst[i]);
+        if (ret.getType() == InstType::Undef) {
+            fprintf(stderr, "Warning: Undefined Instruction was found. Replaced by nop\n");
+            ret = InstDecoder::decodeInstStr(0u);
+        }
+        assembly.push_back(ret.toString());
     }
     if (useLabel) {
         for (unsigned i = 0; i < assembly.size(); ++i) {
@@ -48,7 +53,7 @@ void InstDisassembler::start() {
                 sscanf(current.c_str(), "%s%s%s%s", op, rs, rt, c);
                 int offset;
                 sscanf(c, "%x", &offset);
-                offset = lb::toSigned(static_cast<unsigned>(offset), 16);
+                offset = toSigned(static_cast<unsigned>(offset), 16);
                 offset = (offset * 4 + 4) >> 2;
                 if (!labelTable.count(i + offset)) {
                     char temp[1024];
@@ -65,7 +70,7 @@ void InstDisassembler::start() {
                 sscanf(current.c_str(), "%s%s%s", op, rs, c);
                 int offset;
                 sscanf(c, "%x", &offset);
-                offset = lb::toSigned(static_cast<unsigned>(offset), 16);
+                offset = toSigned(static_cast<unsigned>(offset), 16);
                 offset = (offset * 4 + 4) >> 2;
                 if (!labelTable.count(i + offset)) {
                     char temp[1024];
