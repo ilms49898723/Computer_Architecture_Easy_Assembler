@@ -500,7 +500,7 @@ std::string InstEncoder::processInputString(const std::string &inst) {
         }
     }
     for ( ; idx < val.length(); ++idx) {
-        if (val[idx] == ',') {
+        if (val[idx] == ',' || val[idx] == '(' || val[idx] == ')') {
             ret += " ";
             continue;
         }
