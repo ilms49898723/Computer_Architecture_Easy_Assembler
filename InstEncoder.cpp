@@ -243,7 +243,7 @@ unsigned InstEncoder::getReg(const std::string &src) {
     if (isEmptyOrCommentLine(src)) {
         std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
         fprintf(stderr, "%s\n", prefixString.c_str());
-        for (unsigned long long i = 0; i < prefixString.length() + 2; ++i) {
+        for (unsigned long long i = 0; i < prefixString.length() + 1; ++i) {
             fprintf(stderr, " ");
         }
         fprintf(stderr, "^\n");
@@ -293,7 +293,7 @@ unsigned InstEncoder::getC(const std::string &src) {
     if (isEmptyOrCommentLine(src)) {
         std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
         fprintf(stderr, "%s\n", prefixString.c_str());
-        for (unsigned long long i = 0; i < prefixString.length() + 2; ++i) {
+        for (unsigned long long i = 0; i < prefixString.length() + 1; ++i) {
             fprintf(stderr, " ");
         }
         fprintf(stderr, "^\n");
@@ -330,7 +330,7 @@ unsigned InstEncoder::getBranchC(const std::string &src) {
     if (isEmptyOrCommentLine(src)) {
         std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
         fprintf(stderr, "%s\n", prefixString.c_str());
-        for (unsigned long long i = 0; i < prefixString.length() + 2; ++i) {
+        for (unsigned long long i = 0; i < prefixString.length() + 1; ++i) {
             fprintf(stderr, " ");
         }
         fprintf(stderr, "^\n");
