@@ -19,7 +19,9 @@ InstEncoder::~InstEncoder() {
 
 void InstEncoder::init() {
     labelTable.clear();
-    pc = preprocessPc = 0u;
+    valid = true;
+    pc = 0u;
+    preprocessPc = 0u;
     line = 1;
 }
 
@@ -28,43 +30,49 @@ void InstEncoder::setPc(const unsigned &pc) {
     this->preprocessPc = pc;
 }
 
-std::string InstEncoder::preProcess(std::string &src) {
-    if (isComment(src)) {
-        return "";
+void InstEncoder::processLabel(std::string &src) {
+    if (isEmptyOrCommentLine(src)) {
+        return;
     }
     if (hasLabel(src)) {
-        for (unsigned i = 0; i < src.length(); ++i) {
-            if (src[i] == ':') {
-                std::string label = trimWhiteSpace(src.substr(0, i));
-                src = src.substr(i + 1);
-                src = trimLeadingWhiteSpace(src);
-                labelTable.insert(make_pair(label, preprocessPc));
-                preprocessPc += 4;
-                return label;
-            }
-        }
+        unsigned long long loc = src.find(':');
+        std::string label = trimWhiteSpace(src.substr(0, loc));
+        src = src.substr(loc + 1);
+        src = trimLeadingWhiteSpace(src);
+        labelTable.insert(make_pair(label, preprocessPc));
+        preprocessPc += 4;
+        return;
     }
     else {
         src = trimLeadingWhiteSpace(src);
         preprocessPc += 4;
-        return "";
+        return;
     }
-    return "";
 }
 
 InstEncodeData InstEncoder::encodeInst(const std::string& inst) {
-    std::string val = inst;
-    if (isComment(val)) {
-        ++line;
+    if (!valid) {
         return InstEncodeData();
     }
+    if (isEmptyOrCommentLine(inst)) {
+        ++line;
+        return InstEncodeData(0u, false);
+    }
+    std::string val = inst;
     InstEncodeData data = analyzeString(val);
     pc += 4;
     ++line;
-    return data;
+    if (valid) {
+        return data;
+    }
+    else {
+        return InstEncodeData();
+    }
 }
 
 InstEncodeData InstEncoder::analyzeString(std::string inst) {
+    originalInputString = inst;
+    inst = removeComment(inst);
     inst = processInputString(inst);
     // nop
     if (opToLower(inst) == "nop") {
@@ -185,11 +193,28 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
         std::string next = nextString(inst);
         if (isNumber(next)) {
             int temp;
-            sscanf(next.c_str(), "%d", &temp);
+            if (next.length() > 2 && next[0] == '0' && tolower(next[1]) == 'x') {
+                sscanf(next.c_str() + 2, "%x", &temp);
+            }
+            else {
+                sscanf(next.c_str(), "%d", &temp);
+            }
             c = static_cast<unsigned>(temp);
         }
-        else {
+        else if (labelTable.count(next)) {
             c = static_cast<unsigned>(labelTable[next]);
+        }
+        else {
+            std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
+            fprintf(stderr, "%s\n", prefixString.c_str());
+            unsigned long long spaceCnt = prefixString.find(next);
+            for (unsigned long long i = 0; i < spaceCnt; ++i) {
+                fprintf(stderr, " ");
+            }
+            fprintf(stderr, "^\n");
+            fprintf(stderr, "    Syntax Error: %s: Invalid arguments for jr\n", next.c_str());
+            valid = false;
+            return InstEncodeData();
         }
         ret |= (opCode & 0x3Fu) << 26;
         ret |= (c & 0x3FFFFFFu);
@@ -199,15 +224,45 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
         return InstEncodeData(0xFFFFFFFFu, true);
     }
     else {
-        fprintf(stderr, "Line %d: Unrecognized instruction %s\n", line, op.c_str());
+        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
+        fprintf(stderr, "%s\n", prefixString.c_str());
+        for (unsigned long long i = 0; i < 4; ++i) {
+            fprintf(stderr, " ");
+        }
+        fprintf(stderr, "^\n");
+        fprintf(stderr, "    Syntax Error: %s: Undefined instruction\n", op.c_str());
+        valid = false;
         return InstEncodeData(0xFFFFFFFFu, false);
     }
 }
 
 unsigned InstEncoder::getReg(const std::string &src) {
+    if (!valid) {
+        return 0xFFFFFFFFu;
+    }
+    if (isEmptyOrCommentLine(src)) {
+        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
+        fprintf(stderr, "%s\n", prefixString.c_str());
+        for (unsigned long long i = 0; i < prefixString.length() + 2; ++i) {
+            fprintf(stderr, " ");
+        }
+        fprintf(stderr, "^\n");
+        fprintf(stderr, "    Syntax Error: Missing Arguments\n");
+        valid = false;
+        return 0xFFFFFFFFu;
+    }
     std::string tmp = toLowerString(src);
     if (tmp[0] != '$') {
-        return 0xFFFFFFFF;
+        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
+        fprintf(stderr, "%s\n", prefixString.c_str());
+        unsigned long long spaceCnt = prefixString.find(src);
+        for (unsigned long long i = 0; i < spaceCnt; ++i) {
+            fprintf(stderr, " ");
+        }
+        fprintf(stderr, "^\n");
+        fprintf(stderr, "    Syntax Error: register expected, %s provided\n", src.c_str());
+        valid = false;
+        return 0xFFFFFFFFu;
     }
     tmp = tmp.substr(1);
     unsigned regNum;
@@ -216,12 +271,49 @@ unsigned InstEncoder::getReg(const std::string &src) {
     }
     else {
         regNum = InstLookUp::translateToReg(tmp);
+        if (regNum == 0xFFFFFFFFu) {
+            std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
+            fprintf(stderr, "%s\n", prefixString.c_str());
+            unsigned long long spaceCnt = prefixString.find(src);
+            for (unsigned long long i = 0; i < spaceCnt; ++i) {
+                fprintf(stderr, " ");
+            }
+            fprintf(stderr, "^\n");
+            fprintf(stderr, "    Syntax Error: %s: Undefined register\n", src.c_str());
+            valid = false;
+        }
     }
     return regNum;
 }
 
 unsigned InstEncoder::getC(const std::string &src) {
+    if (!valid) {
+        return 0xFFFFFFFFu;
+    }
+    if (isEmptyOrCommentLine(src)) {
+        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
+        fprintf(stderr, "%s\n", prefixString.c_str());
+        for (unsigned long long i = 0; i < prefixString.length() + 2; ++i) {
+            fprintf(stderr, " ");
+        }
+        fprintf(stderr, "^\n");
+        fprintf(stderr, "    Syntax Error: Missing Arguments\n");
+        valid = false;
+        return 0xFFFFFFFFu;
+    }
     unsigned ret;
+    if (!isNumber(src)) {
+        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
+        fprintf(stderr, "%s\n", prefixString.c_str());
+        unsigned long long spaceCnt = prefixString.find(src);
+        for (unsigned long long i = 0; i < spaceCnt; ++i) {
+            fprintf(stderr, " ");
+        }
+        fprintf(stderr, "^\n");
+        fprintf(stderr, "    Syntax Error: %s: Not a number\n", src.c_str());
+        valid = false;
+        return 0xFFFFFFFFu;
+    }
     if (src.find("0x") != std::string::npos || src.find("0X") != std::string::npos) {
         sscanf(src.c_str(), "%x", &ret);
     }
@@ -232,13 +324,35 @@ unsigned InstEncoder::getC(const std::string &src) {
 }
 
 unsigned InstEncoder::getBranchC(const std::string &src) {
+    if (!valid) {
+        return 0xFFFFFFFFu;
+    }
+    if (isEmptyOrCommentLine(src)) {
+        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
+        fprintf(stderr, "%s\n", prefixString.c_str());
+        for (unsigned long long i = 0; i < prefixString.length() + 2; ++i) {
+            fprintf(stderr, " ");
+        }
+        fprintf(stderr, "^\n");
+        fprintf(stderr, "    Syntax Error: Missing Arguments\n");
+        valid = false;
+        return 0xFFFFFFFFu;
+    }
     unsigned ret;
     if (sscanf(src.c_str(), "%x", &ret) == 1) {
         return ret;
     }
     else {
         if (!labelTable.count(src)) {
-            fprintf(stderr, "Line %d: Undefined label: %s\n", line, src.c_str());
+            std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
+            fprintf(stderr, "%s\n", prefixString.c_str());
+            unsigned long long spaceCnt = prefixString.find(src);
+            for (unsigned long long i = 0; i < spaceCnt; ++i) {
+                fprintf(stderr, " ");
+            }
+            fprintf(stderr, "^\n");
+            fprintf(stderr, "    Syntax Error: %s: Undefined label\n", src.c_str());
+            valid = false;
             return 0u;
         }
         int targetAddr = labelTable[src];
@@ -298,19 +412,35 @@ bool InstEncoder::hasLabel(const std::string& src) {
     return src.find(":") != std::string::npos;
 }
 
-bool InstEncoder::isComment(const std::string& src) {
+bool InstEncoder::isEmptyOrCommentLine(const std::string &src) {
+    // check for empty line
+    bool isEmpty = true;
     for (unsigned i = 0; i < src.length(); ++i) {
         if (src[i] != ' ' && src[i] != '\t') {
-            if (src[i] == '#') {
-                return true;
-            }
+            isEmpty = false;
+        }
+    }
+    if (isEmpty) {
+        return true;
+    }
+    // check for comment
+    for (unsigned i = 0; i < src.length(); ++i) {
+        if (src[i] != ' ' && src[i] != '\t' && src[i] != '#') {
+            return false;
+        }
+        if (src[i] == '#') {
+            return true;
         }
     }
     return false;
 }
 
 bool InstEncoder::isNumber(const std::string &src) {
-    for (unsigned i = 0; i < src.length(); ++i) {
+    unsigned i = 0;
+    if (src.length() > 2 && src[0] == '0' && tolower(src[1]) == 'x') {
+        i = 2;
+    }
+    for ( ; i < src.length(); ++i) {
         if (!isdigit(src[i])) {
             return false;
         }
@@ -409,6 +539,16 @@ std::string InstEncoder::trimLeadingWhiteSpace(const std::string &src) {
     }
     else {
         return src.substr(idx);
+    }
+}
+
+std::string InstEncoder::removeComment(const std::string &src) {
+    unsigned long long loc = src.find("#");
+    if (loc == std::string::npos) {
+        return src;
+    }
+    else {
+        return src.substr(0, loc);
     }
 }
 

@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
         disassembler.init(inst, len, pc);
         disassembler.start();
         for (unsigned i = 0; i < len; ++i) {
-            printf("%s\n", disassembler.getLine(i).c_str());
+            fprintf(fout, "%s\n", disassembler.getLine(i).c_str());
         }
         fclose(fout);
         exit(EXIT_SUCCESS);

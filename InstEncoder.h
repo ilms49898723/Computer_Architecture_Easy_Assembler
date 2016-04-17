@@ -34,7 +34,7 @@ public:
     virtual ~InstEncoder();
     void init();
     void setPc(const unsigned& pc);
-    std::string preProcess(std::string &src);
+    void processLabel(std::string &src);
     InstEncodeData encodeInst(const std::string& inst);
 
 private:
@@ -44,19 +44,22 @@ private:
     unsigned getBranchC(const std::string& src);
     InstType getInstType(const std::string& inst);
     bool hasLabel(const std::string& src);
-    bool isComment(const std::string& src);
+    bool isEmptyOrCommentLine(const std::string &src);
     bool isNumber(const std::string& src);
     std::string nextString(std::string& src);
     std::string opToLower(const std::string &src);
     std::string toLowerString(const std::string &src);
     std::string processInputString(const std::string &inst);
     std::string trimWhiteSpace(const std::string& src);
-    std::string trimLeadingWhiteSpace(const std::string &src);
+    std::string trimLeadingWhiteSpace(const std::string& src);
+    std::string removeComment(const std::string& src);
 
 private:
+    bool valid;
     int line;
     unsigned pc;
     unsigned preprocessPc;
+    std::string originalInputString;
     std::map<std::string, int> labelTable;
 };
 

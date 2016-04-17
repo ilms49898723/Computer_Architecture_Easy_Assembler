@@ -49,7 +49,6 @@ int fwriteUnsigned(FILE *fout, const unsigned &src) {
     buffer[1] = static_cast<unsigned char>((src >> 16) & 0xFFu);
     buffer[2] = static_cast<unsigned char>((src >> 8) & 0xFFu);
     buffer[3] = static_cast<unsigned char>(src & 0xFFu);
-    printf("write %02x%02x%02x%02x\n", buffer[0], buffer[1], buffer[2], buffer[3]);
     return fwrite(buffer, sizeof(unsigned char), 4, fout);
 }
 

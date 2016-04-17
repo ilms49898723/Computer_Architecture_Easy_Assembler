@@ -20,7 +20,6 @@ namespace lb {
 
 class InstAssembler {
 public:
-
     InstAssembler();
     void init(FILE* fp);
     void setInitialPc(const unsigned& initialPc);
@@ -30,6 +29,7 @@ public:
 private:
     FILE *fp;
     unsigned initialPc;
+    bool valid;
     InstEncoder instEncoder;
     std::vector<std::string> inputAssembly;
     std::vector<unsigned> binary;
