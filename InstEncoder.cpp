@@ -436,11 +436,16 @@ bool InstEncoder::isEmptyOrCommentLine(const std::string &src) {
 }
 
 bool InstEncoder::isNumber(const std::string &src) {
+    bool isHex = false;
     unsigned i = 0;
     if (src.length() > 2 && src[0] == '0' && tolower(src[1]) == 'x') {
         i = 2;
+        isHex = true;
     }
     for ( ; i < src.length(); ++i) {
+        if (isHex && tolower(src[i]) >= 'a' && tolower(src[i]) <= 'f') {
+            continue;
+        }
         if (!isdigit(src[i])) {
             return false;
         }
