@@ -21,18 +21,19 @@
 
 int main(int argc, char **argv) {
     if (argc == 2 && (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")) {
-        printf("usage: %s [option] mode InputFile -o OutputFile\n", argv[0]);
-        printf("option:\n");
-        printf("    -nolabel: when disassembling, don\'t use label in branch instructions(ex. beq)\n");
-        printf("              only available in mode disassembler\n");
-        printf("    -pc value: specify initial pc value\n");
-        printf("               only available in mode assembler\n");
+        printf("usage: %s [options] mode InputFile -o OutputFile\n", argv[0]);
         printf("mode:\n");
-        printf("-a: assembler\n");
-        printf("-d: disassembler\n\n");
-        printf("ex.\n");
-        printf("    %s -a InputFile -o OutputFile\n", argv[0]);
-        printf("    %s -d InputFile -o OutputFile\n", argv[0]);
+        printf("          -a: assembler\n");
+        printf("          -d: disassembler\n");
+        printf("options:\n");
+        printf("in both mode\n");
+        printf("        -dec: use decimal for all constant integers(default)\n");
+        printf("        -hex: use hexdecimal for all constant integers\n");
+        printf("in mode assembler\n");
+        printf("   -pc value: specify initial pc value(default 0)\n");
+        printf("in mode disassembler\n");
+        printf("      -label: don\'t use label in branch instructions(ex. beq)(default)\n");
+        printf("    -nolabel: don\'t use label in branch instructions(ex. beq)\n");
         printf("\n");
         exit(EXIT_SUCCESS);
     }
@@ -59,6 +60,7 @@ int main(int argc, char **argv) {
         len = lb::InstImageReader::readImageI(fin, inst, &pc);
         lb::InstDisassembler disassembler;
         disassembler.setUseLabel(!argu.hasNoLabel);
+        disassembler.setUseHex(argu.useHex);
         disassembler.init(inst, len, pc);
         disassembler.start();
         for (unsigned i = 0; i < len; ++i) {

@@ -10,7 +10,7 @@
 namespace lb {
 
 bool isValidArguments(int& argc, char**& argv) {
-    if (argc < 2 || argc > 7) {
+    if (argc < 2) {
         return false;
     }
     bool hasA = false;
@@ -18,10 +18,10 @@ bool isValidArguments(int& argc, char**& argv) {
     bool hasNoLabel = false;
     bool hasInitPc = false;
     for (int i = 1; i < argc; ++i) {
-        if (std::string(argv[i]) == "-d" || std::string(argv[i]) == "-D") {
+        if (std::string(argv[i]) == "-d") {
             hasD = true;
         }
-        if (std::string(argv[i]) == "-a" || std::string(argv[i]) == "-A") {
+        if (std::string(argv[i]) == "-a") {
             hasA = true;
         }
         if (std::string(argv[i]) == "-nolabel") {
@@ -34,13 +34,15 @@ bool isValidArguments(int& argc, char**& argv) {
     if (hasA == hasD) {
         return false;
     }
-    if (hasA && hasNoLabel) {
+    else if (hasA && hasNoLabel) {
         return false;
     }
-    if (hasD && hasInitPc) {
+    else if (hasD && hasInitPc) {
         return false;
     }
-    return argc >= 5 && argc <= 7;
+    else {
+        return true;
+    }
 }
 
 int fwriteUnsigned(FILE *fout, const unsigned &src) {
@@ -60,15 +62,15 @@ AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
     bool usedArguments[15];
     memset(usedArguments, false, sizeof(bool) * 15);
     for (int i = 1; i < 15 && i < argc; ++i) {
-        if (std::string(argv[i]) == "-a" || std::string(argv[i]) == "-A") {
+        if (std::string(argv[i]) == "-a") {
             ret.hasA = true;
             usedArguments[i] = true;
         }
-        if (std::string(argv[i]) == "-d" || std::string(argv[i]) == "-D") {
+        if (std::string(argv[i]) == "-d") {
             ret.hasD = true;
             usedArguments[i] = true;
         }
-        if (std::string(argv[i]) == "-o" || std::string(argv[i]) == "-O") {
+        if (std::string(argv[i]) == "-o") {
             ret.hasOutputFile = true;
             usedArguments[i] = true;
             if (i + 1 < argc) {
@@ -79,7 +81,7 @@ AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
                 return AssemblerArgumentInfo();
             }
         }
-        if (std::string(argv[i]) == "-pc" || std::string(argv[i]) == "-PC") {
+        if (std::string(argv[i]) == "-pc") {
             ret.hasInitPc = true;
             usedArguments[i] = true;
             if (i + 1 < argc) {
@@ -101,6 +103,20 @@ AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
             ret.hasNoLabel = true;
             usedArguments[i] = true;
         }
+        if (std::string(argv[i]) == "-hex") {
+            ret.useHex = true;
+            usedArguments[i] = true;
+        }
+        if (std::string(argv[i]) == "-label" || std::string(argv[i]) == "-dec") {
+            usedArguments[i] = true;
+        }
+    }
+    int unused = 0;
+    for (int i = 1; i < argc; ++i) {
+        unused += !usedArguments[i];
+    }
+    if (unused > 1) {
+        return AssemblerArgumentInfo();
     }
     for (int i = 1; i < argc; ++i) {
         if (!usedArguments[i]) {

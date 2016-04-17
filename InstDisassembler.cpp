@@ -11,6 +11,7 @@ namespace lb {
 
 InstDisassembler::InstDisassembler() {
     this->useLabel = true;
+    this->useHex = false;
     this->labelCount = 0;
     this->len = this->pc = 0;
     memset(inst, 0, sizeof(unsigned) * 1024);
@@ -37,10 +38,10 @@ void InstDisassembler::start() {
         result[i] = "";
     }
     for (unsigned i = 0; i < len; ++i) {
-        InstDataStr ret = InstDecoder::decodeInstStr(inst[i]);
+        InstDataStr ret = InstDecoder::decodeInstStr(inst[i], useHex);
         if (ret.getType() == InstType::Undef) {
             fprintf(stderr, "Warning: Undefined Instruction was found. Replaced by nop\n");
-            ret = InstDecoder::decodeInstStr(0u);
+            ret = InstDecoder::decodeInstStr(0u, useHex);
         }
         assembly.push_back(ret.toString());
     }
@@ -116,6 +117,10 @@ void InstDisassembler::start() {
 
 void InstDisassembler::setUseLabel(bool useLabel) {
     this->useLabel = useLabel;
+}
+
+void InstDisassembler::setUseHex(bool useHex) {
+    this->useHex = useHex;
 }
 
 std::string InstDisassembler::getLine(const unsigned &line) {

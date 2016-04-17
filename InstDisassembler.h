@@ -22,11 +22,13 @@ public:
     void init(const unsigned* inst, const unsigned& len, const unsigned& pc);
     void start();
     void setUseLabel(bool useLabel);
+    void setUseHex(bool useHex);
     std::string getLine(const unsigned& line);
 
 private:
     int labelCount = 0;
     bool useLabel;
+    bool useHex;
     unsigned len, pc;
     unsigned inst[1024];
     std::vector<std::string> assembly;

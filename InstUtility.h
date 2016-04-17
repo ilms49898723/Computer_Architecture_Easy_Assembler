@@ -16,6 +16,7 @@
 namespace lb {
 
 struct AssemblerArgumentInfo {
+    bool useHex;
     bool hasA, hasD;
     bool hasInputFile;
     bool hasOutputFile;
@@ -26,7 +27,7 @@ struct AssemblerArgumentInfo {
     std::string inputFile;
     std::string outputFile;
     AssemblerArgumentInfo() {
-        hasA = hasD = hasInputFile = hasOutputFile = hasNoLabel = hasInitPc = isValid = false;
+        useHex = hasA = hasD = hasInputFile = hasOutputFile = hasNoLabel = hasInitPc = isValid = false;
         initPc = 0;
         inputFile = "";
         outputFile = "";
