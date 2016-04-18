@@ -57,11 +57,11 @@ std::string toHexString(const Tp& val) {
     return oss.str();
 }
 
-// check main arguments for easy assembler
-bool isValidArguments(int& argc, char**& argv);
-
 // write an unsigned int to file(big endian)
 int fwriteUnsigned(FILE* fout, const unsigned& src);
+
+// check main arguments for easy assembler
+bool isValidArguments(int& argc, char**& argv);
 
 // analyze main arguments
 AssemblerArgumentInfo processArguments(int& argc, char**& argv);

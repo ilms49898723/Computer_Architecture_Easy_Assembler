@@ -9,10 +9,16 @@
 
 namespace lb {
 
+int fwriteUnsigned(FILE *fout, const unsigned &src) {
+    unsigned char buffer[4];
+    buffer[0] = static_cast<unsigned char>((src >> 24) & 0xFFu);
+    buffer[1] = static_cast<unsigned char>((src >> 16) & 0xFFu);
+    buffer[2] = static_cast<unsigned char>((src >> 8) & 0xFFu);
+    buffer[3] = static_cast<unsigned char>(src & 0xFFu);
+    return fwrite(buffer, sizeof(unsigned char), 4, fout);
+}
+
 bool isValidArguments(int& argc, char**& argv) {
-    if (argc < 2) {
-        return false;
-    }
     bool hasA = false;
     bool hasD = false;
     bool hasNoLabel = false;
@@ -31,27 +37,7 @@ bool isValidArguments(int& argc, char**& argv) {
             hasInitPc = true;
         }
     }
-    if (hasA == hasD) {
-        return false;
-    }
-    else if (hasA && hasNoLabel) {
-        return false;
-    }
-    else if (hasD && hasInitPc) {
-        return false;
-    }
-    else {
-        return true;
-    }
-}
-
-int fwriteUnsigned(FILE *fout, const unsigned &src) {
-    unsigned char buffer[4];
-    buffer[0] = static_cast<unsigned char>((src >> 24) & 0xFFu);
-    buffer[1] = static_cast<unsigned char>((src >> 16) & 0xFFu);
-    buffer[2] = static_cast<unsigned char>((src >> 8) & 0xFFu);
-    buffer[3] = static_cast<unsigned char>(src & 0xFFu);
-    return fwrite(buffer, sizeof(unsigned char), 4, fout);
+    return !((hasA == hasD) || (hasA && hasNoLabel) || (hasD && hasInitPc));
 }
 
 AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
