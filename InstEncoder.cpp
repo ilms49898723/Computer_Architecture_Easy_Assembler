@@ -98,21 +98,7 @@ int InstEncoder::splitInputString(const std::string &src) {
         }
         unsigned long long i = 0;
         std::string newElement;
-        if (temp[0] == ')') {
-            unsigned long long loc = originalInputString.find(")");
-            std::string prefix = "At Line " + std::to_string(line) + ":" + std::to_string(loc) + ": ";
-            fprintf(stderr, "%s%s\n", prefix.c_str(), originalInputString.c_str());
-            for (unsigned long long j = 0; j < prefix.length(); ++j) {
-                fprintf(stderr, " ");
-            }
-            for (unsigned long long j = 0; j < loc; ++j) {
-                fprintf(stderr, " ");
-            }
-            fprintf(stderr, "^\n");
-            fprintf(stderr, "    Syntax Error: Mismatched parentheses\n");
-            return 0;
-        }
-        else if (temp[0] == '(') {
+        if (temp[0] == '(') {
             while (i < temp.length() && temp[i] != ')') {
                 ++i;
             }
@@ -136,6 +122,20 @@ int InstEncoder::splitInputString(const std::string &src) {
             while (i < temp.length() && temp[i] != ',' && temp[i] != '(' && temp[i] != ')') {
                 ++i;
             }
+            if (temp[i] == ')') {
+                unsigned long long loc = originalInputString.find(")");
+                std::string prefix = "At Line " + std::to_string(line) + ":" + std::to_string(loc) + ": ";
+                fprintf(stderr, "%s%s\n", prefix.c_str(), originalInputString.c_str());
+                for (unsigned long long j = 0; j < prefix.length(); ++j) {
+                    fprintf(stderr, " ");
+                }
+                for (unsigned long long j = 0; j < loc; ++j) {
+                    fprintf(stderr, " ");
+                }
+                fprintf(stderr, "^\n");
+                fprintf(stderr, "    Syntax Error: Mismatched parentheses\n");
+                return 0;
+            }
             newElement = temp.substr(0, i);
         }
         elements[idx] = trimWhiteSpace(newElement);
@@ -148,7 +148,7 @@ int InstEncoder::splitInputString(const std::string &src) {
             }
         }
         ++idx;
-        if (temp[i] != '(' && temp[i] != ')') {
+        if (temp[i] != '(') {
             if (i + 1 < temp.length()) {
                 temp = temp.substr(i + 1);
             }
