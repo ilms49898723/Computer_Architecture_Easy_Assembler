@@ -35,7 +35,7 @@ void InstEncoder::processLabel(std::string &src) {
         return;
     }
     if (hasLabel(src)) {
-        unsigned long long loc = src.find(':');
+        unsigned long long loc = src.find(":");
         std::string label = trimWhiteSpace(src.substr(0, loc));
         src = src.substr(loc + 1);
         src = trimLeadingWhiteSpace(src);
@@ -70,23 +70,133 @@ InstEncodeData InstEncoder::encodeInst(const std::string& inst) {
     }
 }
 
-InstEncodeData InstEncoder::analyzeString(std::string inst) {
+void InstEncoder::printErrorMessage(const std::string &msg, const int &idx) {
+    std::string prefix = "At Line " + std::to_string(line) + ":" + std::to_string(elementsLocation[idx]) + ": ";
+    fprintf(stderr, "%s%s\n", prefix.c_str(), originalInputString.c_str());
+    for (int i = 0; i < static_cast<int>(prefix.length()); ++i) {
+        fprintf(stderr, " ");
+    }
+    for (int i = 0; i < elementsLocation[idx]; ++i) {
+        fprintf(stderr, " ");
+    }
+    fprintf(stderr, "^\n");
+    fprintf(stderr, "    ");
+    fprintf(stderr, "%s\n", msg.c_str());
+}
+
+int InstEncoder::splitInputString(const std::string &src) {
+    int idx = 0;
+    std::string temp = src;
+    temp = removeComment(temp);
+    temp = trimLeadingWhiteSpace(temp);
+    elements[idx] = nextString(temp);
+    elementsLocation[idx] = 0;
+    ++idx;
+    while (!temp.empty()) {
+        if (idx >= 15) {
+            return 0;
+        }
+        unsigned long long i = 0;
+        std::string newElement;
+        if (temp[0] == ')') {
+            unsigned long long loc = originalInputString.find(")");
+            std::string prefix = "At Line " + std::to_string(line) + ":" + std::to_string(loc) + ": ";
+            fprintf(stderr, "%s%s\n", prefix.c_str(), originalInputString.c_str());
+            for (unsigned long long j = 0; j < prefix.length(); ++j) {
+                fprintf(stderr, " ");
+            }
+            for (unsigned long long j = 0; j < loc; ++j) {
+                fprintf(stderr, " ");
+            }
+            fprintf(stderr, "^\n");
+            fprintf(stderr, "    Syntax Error: Mismatched parentheses\n");
+            return 0;
+        }
+        else if (temp[0] == '(') {
+            while (i < temp.length() && temp[i] != ')') {
+                ++i;
+            }
+            if (i >= temp.length()) {
+                unsigned long long loc = originalInputString.find("(");
+                std::string prefix = "At Line " + std::to_string(line) + ":" + std::to_string(loc) + ": ";
+                fprintf(stderr, "%s%s\n", prefix.c_str(), originalInputString.c_str());
+                for (unsigned long long j = 0; j < prefix.length(); ++j) {
+                    fprintf(stderr, " ");
+                }
+                for (unsigned long long j = 0; j < loc; ++j) {
+                    fprintf(stderr, " ");
+                }
+                fprintf(stderr, "^\n");
+                fprintf(stderr, "    Syntax Error: Mismatched parentheses\n");
+                return 0;
+            }
+            newElement = temp.substr(1, i - 1);
+        }
+        else {
+            while (i < temp.length() && temp[i] != ',' && temp[i] != '(' && temp[i] != ')') {
+                ++i;
+            }
+            newElement = temp.substr(0, i);
+        }
+        elements[idx] = trimWhiteSpace(newElement);
+        unsigned long long startIdx = elementsLocation[idx - 1] + elements[idx - 1].length();
+        elementsLocation[idx] = static_cast<int>(src.find(newElement, startIdx));
+        while (src[elementsLocation[idx]] == ' ' || src[elementsLocation[idx]] == '\t') {
+            ++elementsLocation[idx];
+            if (elementsLocation[idx] >= static_cast<int>(src.length())) {
+                break;
+            }
+        }
+        ++idx;
+        if (temp[i] != '(' && temp[i] != ')') {
+            if (i + 1 < temp.length()) {
+                temp = temp.substr(i + 1);
+            }
+            else {
+                temp = "";
+            }
+        }
+        else {
+            if (i < temp.length()) {
+                temp = temp.substr(i);
+            }
+            else {
+                temp = "";
+            }
+        }
+    }
+    return idx;
+}
+
+InstEncodeData InstEncoder::analyzeString(const std::string& inst) {
     originalInputString = inst;
-    inst = removeComment(inst);
-    inst = processInputString(inst);
+    elementsLength = splitInputString(inst);
+    if (elementsLength <= 0) {
+        valid = false;
+        return InstEncodeData();
+    }
+    elements[0] = toLowerString(elements[0]);
     // nop
-    if (opToLower(inst) == "nop") {
+    if (getElements(0) == "nop") {
+        if (!checkElementsCount(1)) {
+            valid = false;
+            return InstEncodeData();
+        }
         return InstEncodeData(0u, true);
     }
     // normal case
     // for instruction operator
-    std::string op = nextString(inst);
+    std::string op = getElements(0);
     InstType instType = getInstType(op);
     if (instType == InstType::R) {
         unsigned funct = InstLookUp::translateToFunct(op);
         if (op == "jr") {
+            if (!checkElementsCount(2)) {
+                valid = false;
+                return InstEncodeData();
+            }
             unsigned rs;
-            rs = getReg(nextString(inst));
+            rs = getReg(getElements(1), 1);
             unsigned ret = 0u;
             ret |= funct & 0x3Fu;
             ret |= (rs & 0x1Fu) << 21;
@@ -95,10 +205,14 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
         else if (op == "sll" ||
                  op == "srl" ||
                  op == "sra") {
+            if (!checkElementsCount(4)) {
+                valid = false;
+                return InstEncodeData();
+            }
             unsigned rt, rd, c;
-            rd = getReg(nextString(inst));
-            rt = getReg(nextString(inst));
-            c = getC(nextString(inst));
+            rd = getReg(getElements(1), 1);
+            rt = getReg(getElements(2), 2);
+            c = getC(getElements(3), 3);
             unsigned ret = 0u;
             ret |= funct & 0x3Fu;
             ret |= (rt & 0x1Fu) << 16;
@@ -107,10 +221,14 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
             return InstEncodeData(ret, true);
         }
         else {
+            if (!checkElementsCount(4)) {
+                valid = false;
+                return InstEncodeData();
+            }
             unsigned rs, rt, rd;
-            rd = getReg(nextString(inst));
-            rs = getReg(nextString(inst));
-            rt = getReg(nextString(inst));
+            rd = getReg(getElements(1), 1);
+            rs = getReg(getElements(2), 2);
+            rt = getReg(getElements(3), 3);
             unsigned ret = 0u;
             ret |= funct & 0x3Fu;
             ret |= (rs & 0x1Fu) << 21;
@@ -122,9 +240,13 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
     else if (instType == InstType::I) {
         unsigned opCode = InstLookUp::translateToOpCode(op);
         if (op == "lui") {
+            if (!checkElementsCount(3)) {
+                valid = false;
+                return InstEncodeData();
+            }
             unsigned rt, c;
-            rt = getReg(nextString(inst));
-            c = getC(nextString(inst));
+            rt = getReg(getElements(1), 1);
+            c = getC(getElements(2), 2);
             unsigned ret = 0u;
             ret |= (opCode & 0x3Fu) << 26;
             ret |= (rt & 0x1Fu) << 16;
@@ -132,9 +254,13 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
             return InstEncodeData(ret, true);
         }
         else if (op == "bgtz") {
+            if (!checkElementsCount(3)) {
+                valid = false;
+                return InstEncodeData();
+            }
             unsigned rs, c;
-            rs = getReg(nextString(inst));
-            c = getBranchC(nextString(inst));
+            rs = getReg(getElements(1), 1);
+            c = getBranchC(getElements(2), 2);
             unsigned ret = 0u;
             ret |= (opCode & 0x3Fu) << 26;
             ret |= (rs & 0x1Fu) << 21;
@@ -142,10 +268,14 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
             return InstEncodeData(ret, true);
         }
         else if (op == "beq" || op == "bne") {
+            if (!checkElementsCount(4)) {
+                valid = false;
+                return InstEncodeData();
+            }
             unsigned rs, rt, c;
-            rs = getReg(nextString(inst));
-            rt = getReg(nextString(inst));
-            c = getBranchC(nextString(inst));
+            rs = getReg(getElements(1), 1);
+            rt = getReg(getElements(2), 2);
+            c = getBranchC(getElements(3), 3);
             unsigned ret = 0u;
             ret |= (opCode & 0x3Fu) << 26;
             ret |= (rs & 0x1Fu) << 21;
@@ -161,11 +291,15 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
                  op == "sw" ||
                  op == "sh" ||
                  op == "sb") {
+            if (!checkElementsCount(4)) {
+                valid = false;
+                return InstEncodeData();
+            }
             unsigned rt, rs;
             unsigned c;
-            rt = getReg(nextString(inst));
-            c = getC(nextString(inst));
-            rs = getReg(nextString(inst));
+            rt = getReg(getElements(1), 1);
+            c = getC(getElements(2), 2);
+            rs = getReg(getElements(3), 3);
             unsigned ret = 0u;
             ret |= (opCode & 0x3Fu) << 26;
             ret |= (rs & 0x1Fu) << 21;
@@ -174,10 +308,14 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
             return InstEncodeData(ret, true);
         }
         else {
+            if (!checkElementsCount(4)) {
+                valid = false;
+                return InstEncodeData();
+            }
             unsigned rs, rt, c;
-            rt = getReg(nextString(inst));
-            rs = getReg(nextString(inst));
-            c = getC(nextString(inst));
+            rt = getReg(getElements(1), 1);
+            rs = getReg(getElements(2), 2);
+            c = getC(getElements(3), 3);
             unsigned ret = 0u;
             ret |= (opCode & 0x3Fu) << 26;
             ret |= (rs & 0x1Fu) << 21;
@@ -187,10 +325,14 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
         }
     }
     else if (instType == InstType::J) {
+        if (!checkElementsCount(2)) {
+            valid = false;
+            return InstEncodeData();
+        }
         unsigned opCode = InstLookUp::translateToOpCode(op);
         unsigned c;
         unsigned ret = 0u;
-        std::string next = nextString(inst);
+        std::string next = getElements(1);
         if (isNumber(next)) {
             int temp;
             if (next.length() > 2 && next[0] == '0' && tolower(next[1]) == 'x') {
@@ -205,14 +347,9 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
             c = static_cast<unsigned>(labelTable[next]);
         }
         else {
-            std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
-            fprintf(stderr, "%s\n", prefixString.c_str());
-            unsigned long long spaceCnt = prefixString.find(next);
-            for (unsigned long long i = 0; i < spaceCnt; ++i) {
-                fprintf(stderr, " ");
-            }
-            fprintf(stderr, "^\n");
-            fprintf(stderr, "    Syntax Error: %s: Invalid arguments for jr\n", next.c_str());
+            char errorMessage[1100];
+            sprintf(errorMessage, "Syntax Error: %s: Invalic arguments for jr", next.c_str());
+            printErrorMessage(errorMessage, 1);
             valid = false;
             return InstEncodeData();
         }
@@ -221,46 +358,37 @@ InstEncodeData InstEncoder::analyzeString(std::string inst) {
         return InstEncodeData(ret, true);
     }
     else if (instType == InstType::S) {
+        if (!checkElementsCount(1)) {
+            valid = false;
+            return InstEncodeData();
+        }
         return InstEncodeData(0xFFFFFFFFu, true);
     }
     else {
-        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
-        fprintf(stderr, "%s\n", prefixString.c_str());
-        for (unsigned long long i = 0; i < 4; ++i) {
-            fprintf(stderr, " ");
-        }
-        fprintf(stderr, "^\n");
-        fprintf(stderr, "    Syntax Error: %s: Undefined instruction\n", op.c_str());
+        char errorMessage[1100];
+        sprintf(errorMessage, "Syntax Error: %s: Undefined instruction", op.c_str());
+        printErrorMessage(errorMessage, 0);
         valid = false;
         return InstEncodeData(0xFFFFFFFFu, false);
     }
 }
 
-unsigned InstEncoder::getReg(const std::string &src) {
+unsigned InstEncoder::getReg(const std::string &src, const int &cnt) {
     if (!valid) {
         return 0xFFFFFFFFu;
     }
     if (isEmptyOrCommentLine(src)) {
-        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
-        fprintf(stderr, "%s\n", prefixString.c_str());
-        for (unsigned long long i = 0; i < prefixString.length() + 1; ++i) {
-            fprintf(stderr, " ");
-        }
-        fprintf(stderr, "^\n");
-        fprintf(stderr, "    Syntax Error: Missing Arguments\n");
+        char errorMessage[1100];
+        sprintf(errorMessage, "Syntax Error: Missing Arguments");
+        printErrorMessage(errorMessage, cnt);
         valid = false;
         return 0xFFFFFFFFu;
     }
     std::string tmp = toLowerString(src);
     if (tmp[0] != '$') {
-        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
-        fprintf(stderr, "%s\n", prefixString.c_str());
-        unsigned long long spaceCnt = prefixString.find(src);
-        for (unsigned long long i = 0; i < spaceCnt; ++i) {
-            fprintf(stderr, " ");
-        }
-        fprintf(stderr, "^\n");
-        fprintf(stderr, "    Syntax Error: register expected, %s provided\n", src.c_str());
+        char errorMessage[1100];
+        sprintf(errorMessage, "Syntax Error: Register expected, %s provided", src.c_str());
+        printErrorMessage(errorMessage, cnt);
         valid = false;
         return 0xFFFFFFFFu;
     }
@@ -272,49 +400,35 @@ unsigned InstEncoder::getReg(const std::string &src) {
     else {
         regNum = InstLookUp::translateToReg(tmp);
         if (regNum == 0xFFFFFFFFu) {
-            std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
-            fprintf(stderr, "%s\n", prefixString.c_str());
-            unsigned long long spaceCnt = prefixString.find(src);
-            for (unsigned long long i = 0; i < spaceCnt; ++i) {
-                fprintf(stderr, " ");
-            }
-            fprintf(stderr, "^\n");
-            fprintf(stderr, "    Syntax Error: %s: Undefined register\n", src.c_str());
+            char errorMessage[1100];
+            sprintf(errorMessage, "Syntax Error: %s: Undefined register", src.c_str());
+            printErrorMessage(errorMessage, cnt);
             valid = false;
         }
     }
     return regNum;
 }
 
-unsigned InstEncoder::getC(const std::string &src) {
+unsigned InstEncoder::getC(const std::string &src, const int &cnt) {
     if (!valid) {
         return 0xFFFFFFFFu;
     }
     if (isEmptyOrCommentLine(src)) {
-        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
-        fprintf(stderr, "%s\n", prefixString.c_str());
-        for (unsigned long long i = 0; i < prefixString.length() + 1; ++i) {
-            fprintf(stderr, " ");
-        }
-        fprintf(stderr, "^\n");
-        fprintf(stderr, "    Syntax Error: Missing Arguments\n");
+        char errorMessage[1100];
+        sprintf(errorMessage, "Syntax Error: Missing Arguments");
+        printErrorMessage(errorMessage, cnt);
         valid = false;
         return 0xFFFFFFFFu;
     }
     unsigned ret;
     if (!isNumber(src)) {
-        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
-        fprintf(stderr, "%s\n", prefixString.c_str());
-        unsigned long long spaceCnt = prefixString.find(src);
-        for (unsigned long long i = 0; i < spaceCnt; ++i) {
-            fprintf(stderr, " ");
-        }
-        fprintf(stderr, "^\n");
-        fprintf(stderr, "    Syntax Error: %s: Not a number\n", src.c_str());
+        char errorMessage[1100];
+        sprintf(errorMessage, "Syntax Error: %s: Not a number", src.c_str());
+        printErrorMessage(errorMessage, cnt);
         valid = false;
         return 0xFFFFFFFFu;
     }
-    if (src.find("0x") != std::string::npos || src.find("0X") != std::string::npos) {
+    if (src.find("0x") != std::string::npos) {
         sscanf(src.c_str(), "%x", &ret);
     }
     else {
@@ -323,35 +437,33 @@ unsigned InstEncoder::getC(const std::string &src) {
     return ret;
 }
 
-unsigned InstEncoder::getBranchC(const std::string &src) {
+unsigned InstEncoder::getBranchC(const std::string &src, const int &cnt) {
     if (!valid) {
         return 0xFFFFFFFFu;
     }
     if (isEmptyOrCommentLine(src)) {
-        std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
-        fprintf(stderr, "%s\n", prefixString.c_str());
-        for (unsigned long long i = 0; i < prefixString.length() + 1; ++i) {
-            fprintf(stderr, " ");
-        }
-        fprintf(stderr, "^\n");
-        fprintf(stderr, "    Syntax Error: Missing Arguments\n");
+        char errorMessage[1100];
+        sprintf(errorMessage, "Syntax Error: Missing Arguments");
+        printErrorMessage(errorMessage, cnt);
         valid = false;
         return 0xFFFFFFFFu;
     }
     unsigned ret;
-    if (sscanf(src.c_str(), "%x", &ret) == 1) {
-        return ret;
+    if (isNumber(src)) {
+        if (src.find("0x") != std::string::npos) {
+            sscanf(src.c_str(), "%x", &ret);
+            return ret;
+        }
+        else{
+            sscanf(src.c_str(), "%d", &ret);
+            return ret;
+        }
     }
     else {
         if (!labelTable.count(src)) {
-            std::string prefixString = "Line " + std::to_string(line) + ": " + originalInputString;
-            fprintf(stderr, "%s\n", prefixString.c_str());
-            unsigned long long spaceCnt = prefixString.find(src);
-            for (unsigned long long i = 0; i < spaceCnt; ++i) {
-                fprintf(stderr, " ");
-            }
-            fprintf(stderr, "^\n");
-            fprintf(stderr, "    Syntax Error: %s: Undefined label\n", src.c_str());
+            char errorMessage[1100];
+            sprintf(errorMessage, "Syntax Error: %s: Undefined label", src.c_str());
+            printErrorMessage(errorMessage, cnt);
             valid = false;
             return 0u;
         }
@@ -436,10 +548,16 @@ bool InstEncoder::isEmptyOrCommentLine(const std::string &src) {
 }
 
 bool InstEncoder::isNumber(const std::string &src) {
+    if (src.empty()) {
+        return false;
+    }
     bool isHex = false;
     unsigned i = 0;
-    if (src.length() > 2 && src[0] == '0' && tolower(src[1]) == 'x') {
-        i = 2;
+    if (src[i] == '-') {
+        i += 1;
+    }
+    if (i + 1 < src.length() && src[i] == '0' && tolower(src[i + 1]) == 'x') {
+        i += 2;
         isHex = true;
     }
     for ( ; i < src.length(); ++i) {
@@ -451,6 +569,20 @@ bool InstEncoder::isNumber(const std::string &src) {
         }
     }
     return true;
+}
+
+bool InstEncoder::checkElementsCount(const int &cnt) {
+    if (elementsLength != cnt) {
+        printErrorMessage("Invalid Instructions, too many/few arguments, or mistyped", 0);
+    }
+    return elementsLength == cnt;
+}
+
+std::string InstEncoder::getElements(const int &target) {
+    if (target < 0 || target >= elementsLength) {
+        return "";
+    }
+    return elements[target];
 }
 
 std::string InstEncoder::nextString(std::string &src) {
@@ -474,17 +606,6 @@ std::string InstEncoder::nextString(std::string &src) {
     return stringBuffer;
 }
 
-std::string InstEncoder::opToLower(const std::string &src) {
-    std::string ret = src;
-    for (unsigned i = 0; i < ret.length(); ++i) {
-        if (ret[i] == ' ') {
-            break;
-        }
-        ret[i] = static_cast<char>(tolower(ret[i]));
-    }
-    return ret;
-}
-
 std::string InstEncoder::toLowerString(const std::string &src) {
     std::string ret = src;
     for (unsigned i = 0; i < ret.length(); ++i) {
@@ -493,37 +614,10 @@ std::string InstEncoder::toLowerString(const std::string &src) {
     return ret;
 }
 
-std::string InstEncoder::processInputString(const std::string &inst) {
-    std::string val = inst;
-    std::string ret = "";
-    val = trimLeadingWhiteSpace(val);
-    unsigned idx = 0;
-    for ( ; idx < val.length(); ++idx) {
-        ret += val[idx];
-        if (val[idx] == ' ') {
-            break;
-        }
-    }
-    for ( ; idx < val.length(); ++idx) {
-        if (val[idx] == ',' || val[idx] == '(' || val[idx] == ')') {
-            ret += " ";
-            continue;
-        }
-        if (val[idx] == '$') {
-            ret += " ";
-        }
-        if (val[idx] == ' ') {
-            continue;
-        }
-        ret += val[idx];
-    }
-    return ret;
-}
-
 std::string InstEncoder::trimWhiteSpace(const std::string &src) {
     std::string ret = "";
     for (unsigned i = 0; i < src.length(); ++i) {
-        if (src[i] == ' ') {
+        if (src[i] == ' ' || src[i] == '\t') {
             continue;
         }
         if (src[i] == '#') {
