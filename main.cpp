@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
         fclose(fout);
         exit(EXIT_SUCCESS);
     }
-    else {
+    if (argu.hasA) {
         FILE* fin = nullptr;
         FILE *fout = nullptr;
         fin = fopen(argu.inputFile.c_str(), "rt");
