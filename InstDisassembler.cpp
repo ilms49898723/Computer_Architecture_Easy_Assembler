@@ -54,7 +54,12 @@ void InstDisassembler::start() {
                 char op[1024], rs[1024], rt[1024], c[1024];
                 sscanf(current.c_str(), "%s%s%s%s", op, rs, rt, c);
                 int offset;
-                sscanf(c, "%x", &offset);
+                if (useHex) {
+                    sscanf(c, "%x", &offset);
+                }
+                else {
+                    sscanf(c, "%d", &offset);
+                }
                 offset = toSigned(static_cast<unsigned>(offset), 16);
                 offset = (offset * 4 + 4) >> 2;
                 maxPc = std::max(i + offset, maxPc);
@@ -72,7 +77,12 @@ void InstDisassembler::start() {
                 char op[1024], rs[1024], c[1024];
                 sscanf(current.c_str(), "%s%s%s", op, rs, c);
                 int offset;
-                sscanf(c, "%x", &offset);
+                if (useHex) {
+                    sscanf(c, "%x", &offset);
+                }
+                else {
+                    sscanf(c, "%d", &offset);
+                }
                 offset = toSigned(static_cast<unsigned>(offset), 16);
                 offset = (offset * 4 + 4) >> 2;
                 maxPc = std::max(i + offset, maxPc);
@@ -90,7 +100,12 @@ void InstDisassembler::start() {
                 char op[1024], c[1024];
                 sscanf(current.c_str(), "%s%s", op, c);
                 int offset;
-                sscanf(c, "%x", &offset);
+                if (useHex) {
+                    sscanf(c, "%x", &offset);
+                }
+                else {
+                    sscanf(c, "%d", &offset);
+                }
                 maxPc = std::max(i + offset, maxPc);
                 if (!labelTable.count(i + offset)) {
                     char temp[1024];
