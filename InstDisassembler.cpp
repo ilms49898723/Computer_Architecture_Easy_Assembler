@@ -13,7 +13,9 @@ InstDisassembler::InstDisassembler() {
     this->useLabel = true;
     this->useHex = false;
     this->labelCount = 0;
-    this->len = this->pc = 0;
+    this->maxPc = 0;
+    this->len = 0;
+    this->pc = 0;
     memset(inst, 0, sizeof(unsigned) * 1024);
     assembly.clear();
     labelTable.clear();
@@ -40,7 +42,7 @@ void InstDisassembler::start() {
     for (unsigned i = 0; i < len; ++i) {
         InstDataStr ret = InstDecoder::decodeInstStr(inst[i], useHex);
         if (ret.getType() == InstType::Undef) {
-            fprintf(stderr, "Warning: Undefined Instruction was found. Replaced by nop\n");
+            fprintf(stderr, "Warning: Instruction #%d: Undefined Instruction was found. Replaced by nop\n", i + 1);
             ret = InstDecoder::decodeInstStr(0u, useHex);
         }
         assembly.push_back(ret.toString());
@@ -48,14 +50,15 @@ void InstDisassembler::start() {
     if (useLabel) {
         for (unsigned i = 0; i < assembly.size(); ++i) {
             std::string &current = assembly[i];
-            if (current.find("beq") != std::string::npos ||
-                current.find("bne") != std::string::npos) {
+            if (current.find("beq ") != std::string::npos ||
+                current.find("bne ") != std::string::npos) {
                 char op[1024], rs[1024], rt[1024], c[1024];
                 sscanf(current.c_str(), "%s%s%s%s", op, rs, rt, c);
                 int offset;
                 sscanf(c, "%x", &offset);
                 offset = toSigned(static_cast<unsigned>(offset), 16);
                 offset = (offset * 4 + 4) >> 2;
+                maxPc = std::max(i + offset, maxPc);
                 if (!labelTable.count(i + offset)) {
                     char temp[1024];
                     sprintf(temp, "%d", labelCount);
@@ -66,13 +69,14 @@ void InstDisassembler::start() {
                 current = std::string(op) + " " + std::string(rs) + " " + std::string(rt) + " " +
                           labelTable[i + offset];
             }
-            else if (current.find("bgtz") != std::string::npos) {
+            else if (current.find("bgtz ") != std::string::npos) {
                 char op[1024], rs[1024], c[1024];
                 sscanf(current.c_str(), "%s%s%s", op, rs, c);
                 int offset;
                 sscanf(c, "%x", &offset);
                 offset = toSigned(static_cast<unsigned>(offset), 16);
                 offset = (offset * 4 + 4) >> 2;
+                maxPc = std::max(i + offset, maxPc);
                 if (!labelTable.count(i + offset)) {
                     char temp[1024];
                     sprintf(temp, "%d", labelCount);
@@ -82,12 +86,13 @@ void InstDisassembler::start() {
                 }
                 current = std::string(op) + " " + std::string(rs) + " " + labelTable[i + offset];
             }
-            else if (current.find("j") != std::string::npos ||
-                     current.find("jal") != std::string::npos) {
+            else if (current.find("j ") != std::string::npos ||
+                     current.find("jal ") != std::string::npos) {
                 char op[1024], c[1024];
                 sscanf(current.c_str(), "%s%s", op, c);
                 int offset;
                 sscanf(c, "%x", &offset);
+                maxPc = std::max(i + offset, maxPc);
                 if (!labelTable.count(i + offset)) {
                     char temp[1024];
                     sprintf(temp, "%d", labelCount);
@@ -111,8 +116,28 @@ void InstDisassembler::start() {
                 result[i] += "      ";
             }
         }
-        result[i] += assembly[i];
+        if (assembly[i] == "sll $0, $0, 0") {
+            result[i] += "nop";
+        }
+        else {
+            result[i] += assembly[i];
+        }
     }
+    for (unsigned i = static_cast<unsigned>(assembly.size()); i <= maxPc; ++i) {
+        if (useLabel) {
+            if (labelTable.count(i)) {
+                for (unsigned long long j = labelTable[i].length(); j < 4; ++j) {
+                    result[i] += " ";
+                }
+                result[i] += labelTable[i] + ": ";
+            }
+            else {
+                result[i] += "      ";
+            }
+        }
+        result[i] += "nop";
+    }
+    len = std::max(maxPc + 1, static_cast<unsigned>(assembly.size()));
 }
 
 void InstDisassembler::setUseLabel(bool useLabel) {
@@ -123,7 +148,11 @@ void InstDisassembler::setUseHex(bool useHex) {
     this->useHex = useHex;
 }
 
-std::string InstDisassembler::getLine(const unsigned &line) {
+unsigned InstDisassembler::length() const {
+    return len;
+}
+
+std::string InstDisassembler::getLine(const unsigned &line) const {
     if (line >= len) {
         return "";
     }

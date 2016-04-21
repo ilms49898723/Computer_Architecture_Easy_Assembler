@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
         disassembler.setUseHex(argu.useHex);
         disassembler.init(inst, len, pc);
         disassembler.start();
-        for (unsigned i = 0; i < len; ++i) {
+        for (unsigned i = 0; i < disassembler.length(); ++i) {
             fprintf(fout, "%s\n", disassembler.getLine(i).c_str());
         }
         fclose(fout);

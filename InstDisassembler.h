@@ -23,12 +23,14 @@ public:
     void start();
     void setUseLabel(bool useLabel);
     void setUseHex(bool useHex);
-    std::string getLine(const unsigned& line);
+    unsigned length() const;
+    std::string getLine(const unsigned& line) const;
 
 private:
-    int labelCount = 0;
+    int labelCount;
     bool useLabel;
     bool useHex;
+    unsigned maxPc;
     unsigned len, pc;
     unsigned inst[1024];
     std::vector<std::string> assembly;
