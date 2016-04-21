@@ -15,7 +15,6 @@ InstDisassembler::InstDisassembler() {
     this->labelCount = 0;
     this->maxPc = 0;
     this->len = 0;
-    this->pc = 0;
     memset(inst, 0, sizeof(unsigned) * 1024);
     assembly.clear();
     labelTable.clear();

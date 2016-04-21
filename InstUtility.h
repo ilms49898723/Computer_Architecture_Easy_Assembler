@@ -66,13 +66,6 @@ bool isValidArguments(int& argc, char**& argv);
 // analyze main arguments
 AssemblerArgumentInfo processArguments(int& argc, char**& argv);
 
-// for convenience, only use static_cast<int>
-int toSigned(const unsigned& src);
-
-// extend sign bits
-// ex. 1 byte "0x80" to 4 bytes "0xFFFFFF80"
-int toSigned(const unsigned& src, const lb::InstMemLen& type);
-
 // extend sign bits
 // similar to int toSigned(const unsigned& src, const LB::InstMemLen& type);
 // argument type pass by bits number instead

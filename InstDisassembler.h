@@ -31,7 +31,7 @@ private:
     bool useLabel;
     bool useHex;
     unsigned maxPc;
-    unsigned len, pc;
+    unsigned len;
     unsigned inst[1024];
     std::vector<std::string> assembly;
     std::map<int, std::string> labelTable;
