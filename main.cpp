@@ -86,6 +86,10 @@ int main(int argc, char **argv) {
         if (argu.hasInitPc) {
             initialPc = static_cast<unsigned>(argu.initPc);
         }
+        if (initialPc % 4) {
+            fprintf(stderr, "%d: pc value must be divisible by 4.\n", initialPc);
+            exit(EXIT_FAILURE);
+        }
         lb::InstAssembler assembler;
         assembler.init(fout);
         assembler.setInitialPc(initialPc);
