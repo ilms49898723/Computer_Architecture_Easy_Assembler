@@ -29,7 +29,7 @@ InstDisassembler::~InstDisassembler() {
 
 void InstDisassembler::init(const unsigned *inst, const unsigned &len, const unsigned& pc) {
     for (unsigned i = pc / 4, j = 0; j < len; ++i, ++j) {
-        this->inst[i] = inst[i];
+        this->inst[i] = inst[j];
     }
     this->len = pc / 4 + len;
 }
