@@ -2,4 +2,6 @@
 
 Computer Architecture Easy Assembler
 
-Not completed
+For NTHU Course Computer Architecture
+
+MIPS(simplified)
