@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
         printf("in mode assembler\n");
         printf("   -pc value: specify initial pc value(default 0)\n");
         printf("in mode disassembler\n");
-        printf("      -label: don\'t use label in branch instructions(ex. beq)(default)\n");
+        printf("      -label: use label in branch instructions(ex. beq)(default)\n");
         printf("    -nolabel: don\'t use label in branch instructions(ex. beq)\n");
         printf("\n");
         exit(EXIT_SUCCESS);
