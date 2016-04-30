@@ -32,10 +32,10 @@ private:
     bool useHex;
     unsigned maxPc;
     unsigned len;
-    unsigned inst[1024];
+    unsigned inst[4096];
     std::vector<std::string> assembly;
     std::map<int, std::string> labelTable;
-    std::string result[1024];
+    std::string result[4096];
 };
 
 } /* namespace lb */
