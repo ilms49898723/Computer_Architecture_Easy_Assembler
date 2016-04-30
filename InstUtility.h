@@ -11,7 +11,7 @@
 #include <cstring>
 #include <sstream>
 #include <string>
-#include "InstEnum.h"
+#include "InstType.h"
 
 namespace lb {
 
