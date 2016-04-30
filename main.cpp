@@ -49,12 +49,6 @@ int main(int argc, char** argv) {
             fprintf(stderr, "%s: %s\n", argu.inputFile.c_str(), strerror(errno));
             exit(EXIT_FAILURE);
         }
-        FILE* fout = nullptr;
-        fout = fopen(argu.outputFile.c_str(), "w");
-        if (!fout) {
-            fprintf(stderr, "%s: %s\n", argu.outputFile.c_str(), strerror(errno));
-            exit(EXIT_FAILURE);
-        }
         unsigned len, pc;
         unsigned inst[1024];
         len = lb::InstImageReader::readImageI(fin, inst, &pc);
@@ -63,9 +57,16 @@ int main(int argc, char** argv) {
         disassembler.setUseHex(argu.useHex);
         disassembler.init(inst, len, pc);
         disassembler.start();
+        FILE* fout = nullptr;
+        fout = fopen(argu.outputFile.c_str(), "w");
+        if (!fout) {
+            fprintf(stderr, "%s: %s\n", argu.outputFile.c_str(), strerror(errno));
+            exit(EXIT_FAILURE);
+        }
         for (unsigned i = 0; i < disassembler.length(); ++i) {
             fprintf(fout, "%s\n", disassembler.getLine(i).c_str());
         }
+        fclose(fin);
         fclose(fout);
         exit(EXIT_SUCCESS);
     }
@@ -73,13 +74,8 @@ int main(int argc, char** argv) {
         FILE* fin = nullptr;
         FILE* fout = nullptr;
         fin = fopen(argu.inputFile.c_str(), "rt");
-        fout = fopen(argu.outputFile.c_str(), "wb");
         if (!fin) {
             fprintf(stderr, "%s: %s\n", argu.inputFile.c_str(), strerror(errno));
-            exit(EXIT_FAILURE);
-        }
-        if (!fout) {
-            fprintf(stderr, "%s: %s\n", argu.outputFile.c_str(), strerror(errno));
             exit(EXIT_FAILURE);
         }
         unsigned initialPc = 0;
@@ -88,6 +84,11 @@ int main(int argc, char** argv) {
         }
         if (initialPc % 4) {
             fprintf(stderr, "%d: pc value must be divisible by 4.\n", initialPc);
+            exit(EXIT_FAILURE);
+        }
+        fout = fopen(argu.outputFile.c_str(), "wb");
+        if (!fout) {
+            fprintf(stderr, "%s: %s\n", argu.outputFile.c_str(), strerror(errno));
             exit(EXIT_FAILURE);
         }
         lb::InstAssembler assembler;
