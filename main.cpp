@@ -19,7 +19,7 @@
 #include "InstDisassembler.h"
 #include "InstImageReader.h"
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     if (argc == 2 && (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")) {
         printf("usage: %s [options] mode InputFile -o OutputFile\n", argv[0]);
         printf("mode:\n");
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     }
     if (argu.hasA) {
         FILE* fin = nullptr;
-        FILE *fout = nullptr;
+        FILE* fout = nullptr;
         fin = fopen(argu.inputFile.c_str(), "rt");
         fout = fopen(argu.outputFile.c_str(), "wb");
         if (!fin) {

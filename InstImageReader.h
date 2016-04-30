@@ -18,12 +18,16 @@ namespace lb {
 class InstImageReader {
 public:
     static unsigned readImageI(std::string filePath, unsigned* dst, unsigned* pc);
+
     static unsigned readImageI(FILE* iimage, unsigned* dst, unsigned* pc);
+
     static unsigned readImageD(std::string filePath, unsigned* dst, unsigned* sp);
+
     static unsigned readImageD(FILE* dimage, unsigned* dst, unsigned* sp);
 
 public:
     static unsigned char readByteFromBin(FILE* fin);
+
     static unsigned readWordFromBin(FILE* fin);
 };
 

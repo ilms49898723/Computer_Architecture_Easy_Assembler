@@ -106,8 +106,8 @@ std::string InstDataStr::toString() const {
             return opCode + " $" + rs + ", " + c;
         }
         else if (opCode == "addi" || opCode == "addiu" || opCode == "lui" ||
-                opCode == "andi" || opCode == "ori" || opCode == "nori" ||
-                opCode == "slti") {
+                 opCode == "andi" || opCode == "ori" || opCode == "nori" ||
+                 opCode == "slti") {
             return opCode + " $" + rt + ", $" + rs + ", " + c;
         }
         else if (opCode == "beq" || opCode == "bne") {

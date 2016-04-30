@@ -21,38 +21,61 @@ namespace lb {
 struct InstEncodeData {
     unsigned inst;
     bool isValid;
+
     InstEncodeData() :
-            inst(0xFFFFFFFFu), isValid(false) {}
+            inst(0xFFFFFFFFu), isValid(false) { }
+
     InstEncodeData(const unsigned& inst, const bool& isValid) :
-            inst(inst), isValid(isValid) {}
+            inst(inst), isValid(isValid) { }
 };
 
 class InstEncoder {
 public:
     InstEncoder();
+
     virtual ~InstEncoder();
+
     void init();
+
     void setPc(const unsigned& pc);
-    void processLabel(std::string &src);
+
+    void processLabel(std::string& src);
+
     InstEncodeData encodeInst(const std::string& inst);
 
 private:
-    void printErrorMessage(const std::string &msg, const int &idx);
-    int splitInputString(const std::string &src);
+    void printErrorMessage(const std::string& msg, const int& idx);
+
+    int splitInputString(const std::string& src);
+
     InstEncodeData analyzeString(const std::string& inst);
-    unsigned getReg(const std::string &src, const int &cnt);
-    unsigned getC(const std::string &src, const int &cnt);
-    unsigned getBranchC(const std::string &src, const int &cnt);
+
+    unsigned getReg(const std::string& src, const int& cnt);
+
+    unsigned getC(const std::string& src, const int& cnt);
+
+    unsigned getBranchC(const std::string& src, const int& cnt);
+
     InstType getInstType(const std::string& inst);
+
     bool hasLabel(const std::string& src);
-    bool isEmptyOrCommentLine(const std::string &src);
+
+    bool isEmptyOrCommentLine(const std::string& src);
+
     bool isNumber(const std::string& src);
-    bool checkElementsCount(const int &cnt);
-    std::string getElements(const int &target);
+
+    bool checkElementsCount(const int& cnt);
+
+    std::string getElements(const int& target);
+
     std::string nextString(std::string& src);
-    std::string toLowerString(const std::string &src);
+
+    std::string toLowerString(const std::string& src);
+
     std::string trimWhiteSpace(const std::string& src);
+
     std::string trimLeadingWhiteSpace(const std::string& src);
+
     std::string removeComment(const std::string& src);
 
 private:

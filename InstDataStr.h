@@ -20,21 +20,37 @@ namespace lb {
 class InstDataStr {
 public:
     InstDataStr();
+
     virtual ~InstDataStr();
+
     InstType getType() const;
+
     std::string getOpCode() const;
+
     std::string getRs() const;
+
     std::string getRt() const;
+
     std::string getRd() const;
+
     std::string getC() const;
+
     std::string getFunct() const;
+
     void setType(const InstType& val);
+
     void setOpCode(const std::string& val);
-    void setRs(const std::string &val);
-    void setRt(const std::string &val);
-    void setRd(const std::string &val);
-    void setC(const std::string &val);
-    void setFunct(const std::string &val);
+
+    void setRs(const std::string& val);
+
+    void setRt(const std::string& val);
+
+    void setRd(const std::string& val);
+
+    void setC(const std::string& val);
+
+    void setFunct(const std::string& val);
+
     std::string toString() const;
 
 private:

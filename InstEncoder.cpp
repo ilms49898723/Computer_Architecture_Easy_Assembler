@@ -25,12 +25,12 @@ void InstEncoder::init() {
     line = 1;
 }
 
-void InstEncoder::setPc(const unsigned &pc) {
+void InstEncoder::setPc(const unsigned& pc) {
     this->pc = pc;
     this->preprocessPc = pc;
 }
 
-void InstEncoder::processLabel(std::string &src) {
+void InstEncoder::processLabel(std::string& src) {
     if (isEmptyOrCommentLine(src)) {
         return;
     }
@@ -70,7 +70,7 @@ InstEncodeData InstEncoder::encodeInst(const std::string& inst) {
     }
 }
 
-void InstEncoder::printErrorMessage(const std::string &msg, const int &idx) {
+void InstEncoder::printErrorMessage(const std::string& msg, const int& idx) {
     std::string prefix = "At Line " + std::to_string(line) + ":" + std::to_string(elementsLocation[idx]) + ": ";
     fprintf(stderr, "%s%s\n", prefix.c_str(), originalInputString.c_str());
     for (int i = 0; i < static_cast<int>(prefix.length()); ++i) {
@@ -84,7 +84,7 @@ void InstEncoder::printErrorMessage(const std::string &msg, const int &idx) {
     fprintf(stderr, "%s\n", msg.c_str());
 }
 
-int InstEncoder::splitInputString(const std::string &src) {
+int InstEncoder::splitInputString(const std::string& src) {
     int idx = 0;
     std::string temp = src;
     temp = removeComment(temp);
@@ -373,7 +373,7 @@ InstEncodeData InstEncoder::analyzeString(const std::string& inst) {
     }
 }
 
-unsigned InstEncoder::getReg(const std::string &src, const int &cnt) {
+unsigned InstEncoder::getReg(const std::string& src, const int& cnt) {
     if (!valid) {
         return 0xFFFFFFFFu;
     }
@@ -409,7 +409,7 @@ unsigned InstEncoder::getReg(const std::string &src, const int &cnt) {
     return regNum;
 }
 
-unsigned InstEncoder::getC(const std::string &src, const int &cnt) {
+unsigned InstEncoder::getC(const std::string& src, const int& cnt) {
     if (!valid) {
         return 0xFFFFFFFFu;
     }
@@ -437,7 +437,7 @@ unsigned InstEncoder::getC(const std::string &src, const int &cnt) {
     return ret;
 }
 
-unsigned InstEncoder::getBranchC(const std::string &src, const int &cnt) {
+unsigned InstEncoder::getBranchC(const std::string& src, const int& cnt) {
     if (!valid) {
         return 0xFFFFFFFFu;
     }
@@ -454,7 +454,7 @@ unsigned InstEncoder::getBranchC(const std::string &src, const int &cnt) {
             sscanf(src.c_str(), "%x", &ret);
             return ret;
         }
-        else{
+        else {
             sscanf(src.c_str(), "%d", &ret);
             return ret;
         }
@@ -524,7 +524,7 @@ bool InstEncoder::hasLabel(const std::string& src) {
     return src.find(":") != std::string::npos;
 }
 
-bool InstEncoder::isEmptyOrCommentLine(const std::string &src) {
+bool InstEncoder::isEmptyOrCommentLine(const std::string& src) {
     // check for empty line
     bool isEmpty = true;
     for (unsigned i = 0; i < src.length(); ++i) {
@@ -547,7 +547,7 @@ bool InstEncoder::isEmptyOrCommentLine(const std::string &src) {
     return false;
 }
 
-bool InstEncoder::isNumber(const std::string &src) {
+bool InstEncoder::isNumber(const std::string& src) {
     if (src.empty()) {
         return false;
     }
@@ -560,7 +560,7 @@ bool InstEncoder::isNumber(const std::string &src) {
         i += 2;
         isHex = true;
     }
-    for ( ; i < src.length(); ++i) {
+    for (; i < src.length(); ++i) {
         if (isHex && tolower(src[i]) >= 'a' && tolower(src[i]) <= 'f') {
             continue;
         }
@@ -571,21 +571,21 @@ bool InstEncoder::isNumber(const std::string &src) {
     return true;
 }
 
-bool InstEncoder::checkElementsCount(const int &cnt) {
+bool InstEncoder::checkElementsCount(const int& cnt) {
     if (elementsLength != cnt) {
         printErrorMessage("Invalid Instructions, too many/few arguments, or mistyped", 0);
     }
     return elementsLength == cnt;
 }
 
-std::string InstEncoder::getElements(const int &target) {
+std::string InstEncoder::getElements(const int& target) {
     if (target < 0 || target >= elementsLength) {
         return "";
     }
     return elements[target];
 }
 
-std::string InstEncoder::nextString(std::string &src) {
+std::string InstEncoder::nextString(std::string& src) {
     char inputBuffer[2048];
     std::string stringBuffer;
     sscanf(src.c_str(), "%s", inputBuffer);
@@ -606,7 +606,7 @@ std::string InstEncoder::nextString(std::string &src) {
     return stringBuffer;
 }
 
-std::string InstEncoder::toLowerString(const std::string &src) {
+std::string InstEncoder::toLowerString(const std::string& src) {
     std::string ret = src;
     for (unsigned i = 0; i < ret.length(); ++i) {
         ret[i] = static_cast<char>(tolower(ret[i]));
@@ -614,7 +614,7 @@ std::string InstEncoder::toLowerString(const std::string &src) {
     return ret;
 }
 
-std::string InstEncoder::trimWhiteSpace(const std::string &src) {
+std::string InstEncoder::trimWhiteSpace(const std::string& src) {
     std::string ret = "";
     for (unsigned i = 0; i < src.length(); ++i) {
         if (src[i] == ' ' || src[i] == '\t') {
@@ -628,7 +628,7 @@ std::string InstEncoder::trimWhiteSpace(const std::string &src) {
     return ret;
 }
 
-std::string InstEncoder::trimLeadingWhiteSpace(const std::string &src) {
+std::string InstEncoder::trimLeadingWhiteSpace(const std::string& src) {
     unsigned idx = 0;
     while (idx < src.length() && src[idx] == ' ') {
         ++idx;
@@ -641,7 +641,7 @@ std::string InstEncoder::trimLeadingWhiteSpace(const std::string &src) {
     }
 }
 
-std::string InstEncoder::removeComment(const std::string &src) {
+std::string InstEncoder::removeComment(const std::string& src) {
     unsigned long long loc = src.find("#");
     if (loc == std::string::npos) {
         return src;

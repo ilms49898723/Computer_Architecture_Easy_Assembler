@@ -26,6 +26,7 @@ struct AssemblerArgumentInfo {
     int initPc;
     std::string inputFile;
     std::string outputFile;
+
     AssemblerArgumentInfo() {
         useHex = hasA = hasD = hasInputFile = hasOutputFile = hasNoLabel = hasInitPc = isValid = false;
         initPc = 0;

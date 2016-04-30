@@ -27,7 +27,7 @@ void InstAssembler::setInitialPc(const unsigned& initialPc) {
     instEncoder.setPc(initialPc);
 }
 
-void InstAssembler::insert(const std::string &inst) {
+void InstAssembler::insert(const std::string& inst) {
     inputAssembly.push_back(inst);
 }
 

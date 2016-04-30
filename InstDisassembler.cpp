@@ -27,7 +27,7 @@ InstDisassembler::~InstDisassembler() {
 
 }
 
-void InstDisassembler::init(const unsigned *inst, const unsigned &len, const unsigned& pc) {
+void InstDisassembler::init(const unsigned* inst, const unsigned& len, const unsigned& pc) {
     for (unsigned i = pc / 4, j = 0; j < len; ++i, ++j) {
         this->inst[i] = inst[j];
     }
@@ -48,7 +48,7 @@ void InstDisassembler::start() {
     }
     if (useLabel) {
         for (unsigned i = 0; i < assembly.size(); ++i) {
-            std::string &current = assembly[i];
+            std::string& current = assembly[i];
             if (current.find("beq ") != std::string::npos ||
                 current.find("bne ") != std::string::npos) {
                 char op[1024], rs[1024], rt[1024], c[1024];
@@ -119,7 +119,7 @@ void InstDisassembler::start() {
         }
         if (maxPc >= 4095) {
             fprintf(stderr, "Error: Some target addresses of branch instructions are too large.\n");
-            fprintf(stderr, "       Try to use -nolabel to avoid label auto generation\n");
+            fprintf(stderr, "       Try to use -nolabel to avoid label auto generation.\n");
             exit(EXIT_FAILURE);
         }
     }
@@ -171,7 +171,7 @@ unsigned InstDisassembler::length() const {
     return len;
 }
 
-std::string InstDisassembler::getLine(const unsigned &line) const {
+std::string InstDisassembler::getLine(const unsigned& line) const {
     if (line >= len) {
         return "";
     }

@@ -122,7 +122,7 @@ InstDataStr InstDecoder::decodeInstStr(const unsigned& src, const bool& useHex) 
         if (useHex) {
             cStr = toHexString(c);
         }
-        else{
+        else {
             cStr = toDecString(c);
         }
         functStr = InstLookUp::functLookUp(funct);
@@ -141,7 +141,7 @@ InstDataStr InstDecoder::decodeInstStr(const unsigned& src, const bool& useHex) 
         if (useHex) {
             cStr = toHexString(c);
         }
-        else{
+        else {
             cStr = toDecString(c);
         }
         InstDataStr ret;
@@ -185,7 +185,7 @@ InstDataStr InstDecoder::decodeInstStr(const unsigned& src, const bool& useHex) 
         if (useHex) {
             cStr = toHexString(sc);
         }
-        else{
+        else {
             cStr = toDecString(sc);
         }
         InstDataStr ret;

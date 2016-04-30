@@ -9,7 +9,7 @@
 
 namespace lb {
 
-int fwriteUnsigned(FILE *fout, const unsigned &src) {
+int fwriteUnsigned(FILE* fout, const unsigned& src) {
     unsigned char buffer[4];
     buffer[0] = static_cast<unsigned char>((src >> 24) & 0xFFu);
     buffer[1] = static_cast<unsigned char>((src >> 16) & 0xFFu);

@@ -18,12 +18,19 @@ namespace lb {
 class InstDisassembler {
 public:
     InstDisassembler();
+
     virtual  ~InstDisassembler();
+
     void init(const unsigned* inst, const unsigned& len, const unsigned& pc);
+
     void start();
+
     void setUseLabel(bool useLabel);
+
     void setUseHex(bool useHex);
+
     unsigned length() const;
+
     std::string getLine(const unsigned& line) const;
 
 private:
