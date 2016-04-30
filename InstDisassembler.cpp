@@ -118,7 +118,7 @@ void InstDisassembler::start() {
             }
         }
         if (maxPc >= 4095) {
-            fprintf(stderr, "Error: Some target addresses of branch instructions are too large.");
+            fprintf(stderr, "Error: Some target addresses of branch instructions are too large.\n");
             fprintf(stderr, "       Try to use -nolabel to avoid label auto generation\n");
             exit(EXIT_FAILURE);
         }
