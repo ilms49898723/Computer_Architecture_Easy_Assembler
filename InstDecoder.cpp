@@ -66,7 +66,26 @@ InstDataStr InstDecoder::decodeInstStr(const unsigned& src) {
         c = getBitsInRange(src, 0, 16);
         rsStr = InstLookUp::registerLookUpNumber(rs);
         rtStr = InstLookUp::registerLookUpNumber(rt);
-        cStr = toHexString(c);
+        int sc;
+        switch (opCode) {
+            case 0x08u:
+            case 0x23u:
+            case 0x21u:
+            case 0x25u:
+            case 0x20u:
+            case 0x24u:
+            case 0x2Bu:
+            case 0x29u:
+            case 0x28u:
+            case 0x04u:
+            case 0x05u:
+            case 0x07u:
+                sc = toSigned(c, 16);
+                break;
+            default:
+                sc = static_cast<int>(c);
+        }
+        cStr = toHexString(sc);
         InstDataStr ret;
         ret.setType(InstType::I);
         ret.setOpCode(opCodeStr);
@@ -144,11 +163,30 @@ InstDataStr InstDecoder::decodeInstStr(const unsigned& src, const bool& useHex) 
         c = getBitsInRange(src, 0, 16);
         rsStr = InstLookUp::registerLookUpNumber(rs);
         rtStr = InstLookUp::registerLookUpNumber(rt);
+        int sc;
+        switch (opCode) {
+            case 0x08u:
+            case 0x23u:
+            case 0x21u:
+            case 0x25u:
+            case 0x20u:
+            case 0x24u:
+            case 0x2Bu:
+            case 0x29u:
+            case 0x28u:
+            case 0x04u:
+            case 0x05u:
+            case 0x07u:
+                sc = toSigned(c, 16);
+                break;
+            default:
+                sc = static_cast<int>(c);
+        }
         if (useHex) {
-            cStr = toHexString(c);
+            cStr = toHexString(sc);
         }
         else{
-            cStr = toDecString(c);
+            cStr = toDecString(sc);
         }
         InstDataStr ret;
         ret.setType(InstType::I);
