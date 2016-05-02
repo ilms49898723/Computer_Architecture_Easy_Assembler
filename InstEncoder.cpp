@@ -344,7 +344,7 @@ InstEncodeData InstEncoder::analyzeString(const std::string& inst) {
             c = static_cast<unsigned>(temp);
         }
         else if (labelTable.count(next)) {
-            c = static_cast<unsigned>(labelTable[next]);
+            c = static_cast<unsigned>(labelTable[next]) >> 2;
         }
         else {
             char errorMessage[1100];
@@ -354,7 +354,7 @@ InstEncodeData InstEncoder::analyzeString(const std::string& inst) {
             return InstEncodeData();
         }
         ret |= (opCode & 0x3Fu) << 26;
-        ret |= ((c >> 2) & 0x3FFFFFFu);
+        ret |= (c & 0x3FFFFFFu);
         return InstEncodeData(ret, true);
     }
     else if (instType == InstType::S) {
