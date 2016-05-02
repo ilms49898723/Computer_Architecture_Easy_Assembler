@@ -1,7 +1,7 @@
-# Computer_Architecture_Easy_Assembler
+# Computer_Architecture_Mini_Assembler
 
-Computer Architecture Easy Assembler
+Computer Architecture Mini Assembler
 
 For NTHU Course Computer Architecture
 
-MIPS(simplified)
+Language: MIPS(simplified)
