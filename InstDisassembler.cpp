@@ -117,7 +117,7 @@ void InstDisassembler::start() {
                 current = std::string(op) + " " + labelTable[offset];
             }
         }
-        if (maxPc >= 4095) {
+        if (maxPc >= MAXN - 1) {
             fprintf(stderr, "Error: Some target addresses of branch instructions are too large.\n");
             fprintf(stderr, "       Try to use -nolabel to avoid label auto generation.\n");
             exit(EXIT_FAILURE);
