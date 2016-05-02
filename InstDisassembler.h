@@ -8,6 +8,8 @@
 #ifndef INSTDISASSEMBLER_H_
 #define INSTDISASSEMBLER_H_
 
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <vector>
 #include <map>
