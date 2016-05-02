@@ -36,8 +36,8 @@ int main(int argc, char** argv) {
         printf("\n");
         printf("about constant values:\n");
         printf("in mode assembler, numbers with prefix \"0x\" will be a hexdecimal number\n");
-        printf("    15 -> decimal\n");
-        printf("  0x15 -> hexdecimal");
+        printf("    addi $1, $1, 15 -> 15 is decimal\n");
+        printf("    addi $1, $1, 0x15 -> 0x15 is hexdecimal\n");
         printf("\n");
         exit(EXIT_SUCCESS);
     }
