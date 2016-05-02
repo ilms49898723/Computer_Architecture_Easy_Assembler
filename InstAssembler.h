@@ -22,7 +22,7 @@ class InstAssembler {
 public:
     InstAssembler();
 
-    void init(FILE* fp);
+    void init(const std::string& filename);
 
     void setInitialPc(const unsigned& initialPc);
 
@@ -31,10 +31,10 @@ public:
     void start();
 
 private:
-    FILE* fp;
     unsigned initialPc;
     bool valid;
     InstEncoder instEncoder;
+    std::string filename;
     std::vector<std::string> inputAssembly;
     std::vector<unsigned> binary;
 };

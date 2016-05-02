@@ -76,7 +76,6 @@ int main(int argc, char** argv) {
     }
     if (argu.hasA) {
         FILE* fin = nullptr;
-        FILE* fout = nullptr;
         fin = fopen(argu.inputFile.c_str(), "rt");
         if (!fin) {
             fprintf(stderr, "%s: %s\n", argu.inputFile.c_str(), strerror(errno));
@@ -90,13 +89,8 @@ int main(int argc, char** argv) {
             fprintf(stderr, "%d: pc value must be divisible by 4.\n", initialPc);
             exit(EXIT_FAILURE);
         }
-        fout = fopen(argu.outputFile.c_str(), "wb");
-        if (!fout) {
-            fprintf(stderr, "%s: %s\n", argu.outputFile.c_str(), strerror(errno));
-            exit(EXIT_FAILURE);
-        }
         lb::InstAssembler assembler;
-        assembler.init(fout);
+        assembler.init(argu.outputFile);
         assembler.setInitialPc(initialPc);
         char inputBuffer[2048];
         while (fgets(inputBuffer, 2048, fin)) {
@@ -107,7 +101,6 @@ int main(int argc, char** argv) {
         }
         assembler.start();
         fclose(fin);
-        fclose(fout);
         exit(EXIT_SUCCESS);
     }
 }

@@ -10,15 +10,14 @@
 namespace lb {
 
 InstAssembler::InstAssembler() {
-    fp = nullptr;
     valid = true;
     initialPc = 0u;
     inputAssembly.clear();
     binary.clear();
 }
 
-void InstAssembler::init(FILE* fp) {
-    InstAssembler::fp = fp;
+void InstAssembler::init(const std::string& filename) {
+    InstAssembler::filename = filename;
     instEncoder.init();
 }
 
@@ -48,13 +47,18 @@ void InstAssembler::start() {
         }
     }
     if (!binary.empty()) {
+        FILE* fp = fopen(filename.c_str(), "wb");
+        if (!fp) {
+            fprintf(stderr, "%s: %s\n", filename.c_str(), strerror(errno));
+            exit(EXIT_FAILURE);
+        }
         fwriteUnsigned(fp, initialPc);
         fwriteUnsigned(fp, static_cast<unsigned>(binary.size()));
         for (unsigned i = 0; i < binary.size(); ++i) {
             fwriteUnsigned(fp, binary[i]);
         }
+        fclose(fp);
     }
 }
 
 }
-
