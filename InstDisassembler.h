@@ -18,6 +18,9 @@
 namespace lb {
 
 class InstDisassembler {
+private:
+    constexpr static int MAXN = 4096;
+
 public:
     InstDisassembler();
 
@@ -41,10 +44,10 @@ private:
     bool useHex;
     unsigned maxPc;
     unsigned len;
-    unsigned inst[4096];
+    unsigned inst[MAXN];
     std::vector<std::string> assembly;
     std::map<int, std::string> labelTable;
-    std::string result[4096];
+    std::string result[MAXN];
 };
 
 } /* namespace lb */

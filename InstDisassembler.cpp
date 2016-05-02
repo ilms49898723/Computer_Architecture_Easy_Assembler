@@ -15,10 +15,10 @@ InstDisassembler::InstDisassembler() {
     this->labelCount = 0;
     this->maxPc = 0;
     this->len = 0;
-    memset(inst, 0, sizeof(unsigned) * 1024);
+    memset(inst, 0, sizeof(unsigned) * MAXN);
     assembly.clear();
     labelTable.clear();
-    for (int i = 0; i < 1024; ++i) {
+    for (int i = 0; i < MAXN; ++i) {
         result[i] = "";
     }
 }
@@ -35,13 +35,13 @@ void InstDisassembler::init(const unsigned* inst, const unsigned& len, const uns
 }
 
 void InstDisassembler::start() {
-    for (int i = 0; i < 1024; ++i) {
+    for (int i = 0; i < MAXN; ++i) {
         result[i] = "";
     }
     for (unsigned i = 0; i < len; ++i) {
         InstDataStr ret = InstDecoder::decodeInstStr(inst[i], useHex);
         if (ret.getType() == InstType::Undef) {
-            fprintf(stderr, "Warning: Instruction #%d: Undefined Instruction was found. Replaced by nop\n", i + 1);
+            fprintf(stderr, "Warning: Instruction #%d: Undefined Instruction 0x%08X was found.\n         Replaced by nop.\n", i + 1, inst[i]);
             ret = InstDecoder::decodeInstStr(0u, useHex);
         }
         assembly.push_back(ret.toString());
