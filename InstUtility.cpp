@@ -53,8 +53,8 @@ bool isValidArguments(int& argc, char**& argv) {
              (hasDec && hasHex) ||
              (hasA == hasD) ||
              (hasA && hasNoLabel) ||
-             (hasD && hasInitPc) ||
-             (hasA && (hasDec || hasHex)));
+             (hasA && (hasDec || hasHex)) ||
+             (hasD && hasInitPc));
 }
 
 AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
