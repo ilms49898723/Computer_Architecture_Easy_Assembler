@@ -1,6 +1,6 @@
 CC := g++
 
-CXXFLAGS := -std=c++11 -Wall -O3
+CXXFLAGS := -std=c++11 -Wall -Wextra -Os
 
 OBJS := InstAssembler.o \
         InstDataBin.o \
