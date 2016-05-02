@@ -26,14 +26,18 @@ int main(int argc, char** argv) {
         printf("          -a: assembler\n");
         printf("          -d: disassembler\n");
         printf("options:\n");
-        printf("in both mode\n");
-        printf("        -dec: use decimal for all constant integers(default)\n");
-        printf("        -hex: use hexdecimal for all constant integers\n");
         printf("in mode assembler\n");
         printf("   -pc value: specify initial pc value(default 0)\n");
         printf("in mode disassembler\n");
+        printf("        -dec: use decimal for all constant integers(default)\n");
+        printf("        -hex: use hexdecimal for all constant integers\n");
         printf("      -label: use label in branch instructions(ex. beq)(default)\n");
         printf("    -nolabel: don\'t use label in branch instructions(ex. beq)\n");
+        printf("\n");
+        printf("about constant values:\n");
+        printf("in mode assembler, numbers with prefix \"0x\" will be a hexdecimal number\n");
+        printf("    15 -> decimal\n");
+        printf("  0x15 -> hexdecimal");
         printf("\n");
         exit(EXIT_SUCCESS);
     }

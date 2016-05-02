@@ -21,8 +21,11 @@ int fwriteUnsigned(FILE* fout, const unsigned& src) {
 bool isValidArguments(int& argc, char**& argv) {
     bool hasA = false;
     bool hasD = false;
+    bool hasLabel = false;
     bool hasNoLabel = false;
     bool hasInitPc = false;
+    bool hasDec = false;
+    bool hasHex = false;
     for (int i = 1; i < argc; ++i) {
         if (std::string(argv[i]) == "-d") {
             hasD = true;
@@ -30,14 +33,28 @@ bool isValidArguments(int& argc, char**& argv) {
         if (std::string(argv[i]) == "-a") {
             hasA = true;
         }
+        if (std::string(argv[i]) == "-label") {
+            hasLabel = true;
+        }
         if (std::string(argv[i]) == "-nolabel") {
             hasNoLabel = true;
         }
         if (std::string(argv[i]) == "-pc") {
             hasInitPc = true;
         }
+        if (std::string(argv[i]) == "-dec") {
+            hasDec = true;
+        }
+        if (std::string(argv[i]) == "-hex") {
+            hasHex = true;
+        }
     }
-    return !((hasA == hasD) || (hasA && hasNoLabel) || (hasD && hasInitPc));
+    return !((hasLabel && hasNoLabel) ||
+             (hasDec && hasHex) ||
+             (hasA == hasD) ||
+             (hasA && hasNoLabel) ||
+             (hasD && hasInitPc) ||
+             (hasA && (hasDec || hasHex)));
 }
 
 AssemblerArgumentInfo processArguments(int& argc, char**& argv) {
