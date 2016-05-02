@@ -348,13 +348,13 @@ InstEncodeData InstEncoder::analyzeString(const std::string& inst) {
         }
         else {
             char errorMessage[1100];
-            sprintf(errorMessage, "Syntax Error: %s: Invalic arguments for jr", next.c_str());
+            sprintf(errorMessage, "Syntax Error: %s: Invalid arguments for %s\n", next.c_str(), op.c_str());
             printErrorMessage(errorMessage, 1);
             valid = false;
             return InstEncodeData();
         }
         ret |= (opCode & 0x3Fu) << 26;
-        ret |= (c & 0x3FFFFFFu);
+        ret |= ((c >> 2) & 0x3FFFFFFu);
         return InstEncodeData(ret, true);
     }
     else if (instType == InstType::S) {
