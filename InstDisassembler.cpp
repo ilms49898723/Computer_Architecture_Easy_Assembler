@@ -106,15 +106,15 @@ void InstDisassembler::start() {
                 else {
                     sscanf(c, "%d", &offset);
                 }
-                maxPc = std::max(i + offset, maxPc);
-                if (!labelTable.count(i + offset)) {
+                maxPc = std::max(static_cast<unsigned>(offset), maxPc);
+                if (!labelTable.count(offset)) {
                     char temp[1024];
                     sprintf(temp, "%d", labelCount);
                     ++labelCount;
                     std::string newLabel = "L" + std::string(temp);
-                    labelTable.insert(std::make_pair(i + offset, newLabel));
+                    labelTable.insert(std::make_pair(offset, newLabel));
                 }
-                current = std::string(op) + " " + labelTable[i + offset];
+                current = std::string(op) + " " + labelTable[offset];
             }
         }
         if (maxPc >= 4095) {
