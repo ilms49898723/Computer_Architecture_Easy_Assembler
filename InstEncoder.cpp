@@ -348,7 +348,7 @@ InstEncodeData InstEncoder::analyzeString(const std::string& inst) {
         }
         else {
             char errorMessage[1100];
-            sprintf(errorMessage, "Syntax Error: %s: Invalid arguments for %s\n", next.c_str(), op.c_str());
+            sprintf(errorMessage, "Syntax Error: %s: Invalid arguments for %s. Not a number or Undefined label.\n", next.c_str(), op.c_str());
             printErrorMessage(errorMessage, 1);
             valid = false;
             return InstEncodeData();
@@ -462,7 +462,7 @@ unsigned InstEncoder::getBranchC(const std::string& src, const int& cnt) {
     else {
         if (!labelTable.count(src)) {
             char errorMessage[1100];
-            sprintf(errorMessage, "Syntax Error: %s: Undefined label", src.c_str());
+            sprintf(errorMessage, "Syntax Error: %s: Not a number or Undefined label", src.c_str());
             printErrorMessage(errorMessage, cnt);
             valid = false;
             return 0u;
