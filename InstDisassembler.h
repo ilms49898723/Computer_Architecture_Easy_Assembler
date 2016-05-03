@@ -24,7 +24,7 @@ private:
 public:
     InstDisassembler();
 
-    virtual  ~InstDisassembler();
+    virtual ~InstDisassembler();
 
     void init(const unsigned* inst, const unsigned& len, const unsigned& pc);
 
