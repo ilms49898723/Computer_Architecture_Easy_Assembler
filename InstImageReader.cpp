@@ -9,44 +9,52 @@
 
 namespace lb {
 
-unsigned InstImageReader::readImageI(std::string filePath, unsigned* dst, unsigned* pc) {
+unsigned int InstImageReader::readImageI(std::string filePath, unsigned* dst, unsigned* pc, size_t n) {
     FILE* iimage = fopen(filePath.c_str(), "rb");
     if (!iimage) {
         *pc = 0u;
         return 0u;
     }
-    unsigned ret = readImageI(iimage, dst, pc);
+    unsigned ret = readImageI(iimage, dst, pc, n);
     fclose(iimage);
     return ret;
 }
 
-unsigned InstImageReader::readImageI(FILE* iimage, unsigned* dst, unsigned* pc) {
+unsigned int InstImageReader::readImageI(FILE* iimage, unsigned* dst, unsigned* pc, size_t n) {
     unsigned readPc = readWordFromBin(iimage);
     unsigned len = readWordFromBin(iimage);
     unsigned wordRead = 0;
     *pc = readPc;
+    if (len > n) {
+        fprintf(stderr, "Error: buffer to store iimage is not large enough\n");
+        exit(EXIT_FAILURE);
+    }
     for (wordRead = 0; wordRead < len; ++wordRead) {
         dst[wordRead] = readWordFromBin(iimage);
     }
     return wordRead;
 }
 
-unsigned InstImageReader::readImageD(std::string filePath, unsigned* dst, unsigned* sp) {
+unsigned int InstImageReader::readImageD(std::string filePath, unsigned* dst, unsigned* sp, size_t n) {
     FILE* dimage = fopen(filePath.c_str(), "rb");
     if (!dimage) {
         *sp = 0u;
         return 0u;
     }
-    unsigned ret = readImageD(dimage, dst, sp);
+    unsigned ret = readImageD(dimage, dst, sp, n);
     fclose(dimage);
     return ret;
 }
 
-unsigned InstImageReader::readImageD(FILE* dimage, unsigned* dst, unsigned* sp) {
+unsigned int InstImageReader::readImageD(FILE* dimage, unsigned* dst, unsigned* sp, size_t n) {
     unsigned readSp = readWordFromBin(dimage);
     unsigned len = readWordFromBin(dimage);
     unsigned wordRead = 0;
     *sp = readSp;
+    if (len > n) {
+        fprintf(stderr, "Error: buffer to store dimage is not large enough\n");
+        exit(EXIT_FAILURE);
+    }
     for (wordRead = 0; wordRead < len; ++wordRead) {
         dst[wordRead] = readWordFromBin(dimage);
     }
