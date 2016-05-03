@@ -54,8 +54,8 @@ int main(int argc, char** argv) {
             exit(EXIT_FAILURE);
         }
         unsigned len, pc;
-        unsigned inst[1024];
-        len = lb::InstImageReader::readImageI(fin, inst, &pc);
+        unsigned inst[4096];
+        len = lb::InstImageReader::readImageI(fin, inst, &pc, 4096);
         lb::InstDisassembler disassembler;
         disassembler.setUseLabel(!argu.hasNoLabel);
         disassembler.setUseHex(argu.useHex);
@@ -92,8 +92,8 @@ int main(int argc, char** argv) {
         lb::InstAssembler assembler;
         assembler.init(argu.outputFile);
         assembler.setInitialPc(initialPc);
-        char inputBuffer[2048];
-        while (fgets(inputBuffer, 2048, fin)) {
+        char inputBuffer[4096];
+        while (fgets(inputBuffer, 4096 - 1, fin)) {
             if (inputBuffer[strlen(inputBuffer) - 1] == '\n') {
                 inputBuffer[strlen(inputBuffer) - 1] = '\0';
             }
