@@ -28,7 +28,7 @@ InstDisassembler::~InstDisassembler() {
 }
 
 void InstDisassembler::init(const unsigned* inst, const unsigned& len, const unsigned& pc) {
-    if (pc / 4 + len >= MAXN) {
+    if (pc / 4 + len > MAXN) {
         fprintf(stderr, "Error: Disassembler: iimage is too large(max 4096 instructions)\n");
         exit(EXIT_FAILURE);
     }
@@ -74,7 +74,7 @@ void InstDisassembler::start() {
                 else {
                     targetAddrStr = toDecString(targetAddr);
                 }
-                if (targetAddr >= MAXN - 1 || targetAddr < 0) {
+                if (targetAddr + 1 > MAXN || targetAddr < 0) {
                     fprintf(stderr, "Warning: Instruction #%d: %s\n", i + 1, current.c_str());
                     fprintf(stderr, "         Since branch target address %s is too large or is negative,\n", targetAddrStr.c_str());
                     fprintf(stderr, "         Ignore label generation for this instruction\n");
@@ -113,7 +113,7 @@ void InstDisassembler::start() {
                 else {
                     targetAddrStr = toDecString(targetAddr);
                 }
-                if (targetAddr >= MAXN - 1 || targetAddr < 0) {
+                if (targetAddr + 1 > MAXN || targetAddr < 0) {
                     fprintf(stderr, "Warning: Instruction #%d: %s\n", i + 1, current.c_str());
                     fprintf(stderr, "         Since branch target address %s is too large or is negative,\n", targetAddrStr.c_str());
                     fprintf(stderr, "         Ignore label generation for this instruction\n");
@@ -149,7 +149,7 @@ void InstDisassembler::start() {
                 else {
                     targetAddrStr = toDecString(targetAddr);
                 }
-                if (targetAddr >= MAXN - 1 || targetAddr < 0) {
+                if (targetAddr + 1 > MAXN || targetAddr < 0) {
                     fprintf(stderr, "Warning: Instruction #%d: %s\n", i + 1, current.c_str());
                     fprintf(stderr, "         Since branch target address %s is too large or is negative,\n", targetAddrStr.c_str());
                     fprintf(stderr, "         Ignore label generation for this instruction\n");
@@ -168,7 +168,7 @@ void InstDisassembler::start() {
                 }
             }
         }
-        if (maxPc >= MAXN - 1) {
+        if (maxPc + 1 > MAXN) {
             fprintf(stderr, "Warning: Some target addresses of branch instructions are too large.\n");
             fprintf(stderr, "         Try to use -nolabel to disable label auto generation.\n");
             exit(EXIT_FAILURE);
