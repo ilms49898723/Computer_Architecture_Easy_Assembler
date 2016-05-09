@@ -27,9 +27,13 @@ Options:<br/>
 `-pc value` to specify initial pc value, for example, `-pc 512`
 
 Branch label supported.<br/>
-An example MIPS codes:<br/>
+An example MIPS code:<br/>
+j somewhere<br/>
+lw $1, 2($0)<br/>
+j 0x3  # number start with 0x is hexdecimal<br/>
+addi $2, $3, -5<br/>
+addi $t1, $sp, 62  # or directly use t1, t2, sp, etc.<br/>
 somewhere: add $1, $2, $3<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;j somewhere
 
 Disassembler
 ------------
