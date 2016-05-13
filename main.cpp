@@ -29,17 +29,21 @@ int main(int argc, char** argv) {
         printf("\n");
         printf("options:\n");
         printf("in assembler\n");
-        printf("    -pc value    specify initial pc value(default 0)\n");
+        printf("    -pc value    specify initial pc value (default 0)\n");
         printf("in disassembler\n");
-        printf("    -dec         use decimal for all constant integers(default)\n");
+        printf("    -dec         use decimal for all constant integers (default)\n");
         printf("    -hex         use hexdecimal for all constant integers\n");
-        printf("    -label       use label in branch instructions(ex. beq)(default)\n");
+        printf("    -label       use label in branch instructions(ex. beq) (default)\n");
         printf("    -nolabel     use constant in branch instructions(ex. beq)\n");
         printf("\n");
         printf("about constant values:\n");
         printf("in assembler, numbers with prefix \"0x\" will be a hexdecimal number\n");
         printf("    addi $1, $1, 15   -> 15 is decimal\n");
         printf("    addi $1, $1, 0x15 -> 0x15 is hexdecimal\n");
+        printf("\n");
+        printf("some example:\n");
+        printf("    ./assembler -a test.s -o iimage.bin\n");
+        printf("    ./assembler -d iimage.bin -o test.s -hex\n");
         printf("\n");
         exit(EXIT_SUCCESS);
     }
