@@ -22,21 +22,23 @@
 int main(int argc, char** argv) {
     if (argc == 2 && (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")) {
         printf("usage: %s [options] mode InputFile -o OutputFile\n", argv[0]);
+        printf("\n");
         printf("mode:\n");
-        printf("          -a: assembler\n");
-        printf("          -d: disassembler\n");
+        printf("    -a           assembler\n");
+        printf("    -d           disassembler\n");
+        printf("\n");
         printf("options:\n");
-        printf("in mode assembler\n");
-        printf("   -pc value: specify initial pc value(default 0)\n");
-        printf("in mode disassembler\n");
-        printf("        -dec: use decimal for all constant integers(default)\n");
-        printf("        -hex: use hexdecimal for all constant integers\n");
-        printf("      -label: use label in branch instructions(ex. beq)(default)\n");
-        printf("    -nolabel: don\'t use label in branch instructions(ex. beq)\n");
+        printf("in assembler\n");
+        printf("    -pc value    specify initial pc value(default 0)\n");
+        printf("in disassembler\n");
+        printf("    -dec         use decimal for all constant integers(default)\n");
+        printf("    -hex         use hexdecimal for all constant integers\n");
+        printf("    -label       use label in branch instructions(ex. beq)(default)\n");
+        printf("    -nolabel     use constant in branch instructions(ex. beq)\n");
         printf("\n");
         printf("about constant values:\n");
-        printf("in mode assembler, numbers with prefix \"0x\" will be a hexdecimal number\n");
-        printf("    addi $1, $1, 15 -> 15 is decimal\n");
+        printf("in assembler, numbers with prefix \"0x\" will be a hexdecimal number\n");
+        printf("    addi $1, $1, 15   -> 15 is decimal\n");
         printf("    addi $1, $1, 0x15 -> 0x15 is hexdecimal\n");
         printf("\n");
         exit(EXIT_SUCCESS);
