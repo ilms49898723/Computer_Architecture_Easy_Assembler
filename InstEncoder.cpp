@@ -603,6 +603,7 @@ std::string InstEncoder::nextString(std::string& src) {
     else {
         src = src.substr(deleteIdx);
     }
+    src = trimLeadingWhiteSpace(src);
     return stringBuffer;
 }
 
