@@ -19,6 +19,7 @@ InstDisassembler::InstDisassembler() {
     assembly.clear();
     labelTable.clear();
     for (int i = 0; i < MAXN; ++i) {
+        msg[i] = "";
         result[i] = "";
     }
 }
@@ -45,8 +46,11 @@ void InstDisassembler::start() {
     for (unsigned i = 0; i < len; ++i) {
         InstDataStr ret = InstDecoder::decodeInstStr(inst[i], useHex);
         if (ret.getType() == InstType::Undef) {
-            fprintf(stderr, "Warning: Instruction #%d: Undefined Instruction 0x%08X was found.\n         Replaced by nop.\n", i + 1, inst[i]);
+            fprintf(stderr, "Warning: Instruction #%d: Undefined instruction 0x%08X was found.\n         Replaced by nop.\n", i + 1, inst[i]);
             ret = InstDecoder::decodeInstStr(0u, useHex);
+            char instHex[MAXN];
+            snprintf(instHex, MAXN, "0x%08X", inst[i]);
+            msg[i] = std::string("Undefined instruction ") + instHex + ", replaced by nop";
         }
         assembly.push_back(ret.toString());
     }
@@ -206,6 +210,11 @@ void InstDisassembler::start() {
             }
         }
         result[i] += "nop";
+    }
+    for (unsigned i = 0; i <= maxPc; ++i) {
+        if (msg[i] != "") {
+            result[i] += "    #" + msg[i];
+        }
     }
     len = std::max(maxPc + 1, static_cast<unsigned>(assembly.size()));
 }

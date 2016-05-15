@@ -47,6 +47,7 @@ private:
     unsigned inst[MAXN];
     std::vector<std::string> assembly;
     std::map<int, std::string> labelTable;
+    std::string msg[MAXN];
     std::string result[MAXN];
 };
 
