@@ -213,7 +213,7 @@ void InstDisassembler::start() {
     }
     for (unsigned i = 0; i <= maxPc; ++i) {
         if (msg[i] != "") {
-            result[i] += "    #" + msg[i];
+            result[i] += "    # " + msg[i];
         }
     }
     len = std::max(maxPc + 1, static_cast<unsigned>(assembly.size()));
