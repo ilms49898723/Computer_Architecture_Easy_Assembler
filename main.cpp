@@ -103,6 +103,14 @@ int main(int argc, char** argv) {
             if (inputBuffer[strlen(inputBuffer) - 1] == '\n') {
                 inputBuffer[strlen(inputBuffer) - 1] = '\0';
             }
+            for (char* ptr = inputBuffer; *ptr; ++ptr) {
+                if (*ptr == '\t') {
+                    *ptr = ' ';
+                }
+                if (!isprint(*ptr)) {
+                    *ptr = ' ';
+                }
+            }
             assembler.insert(inputBuffer);
         }
         assembler.start();
