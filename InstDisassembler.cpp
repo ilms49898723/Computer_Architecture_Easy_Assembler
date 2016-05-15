@@ -211,7 +211,7 @@ void InstDisassembler::start() {
         }
         result[i] += "nop";
     }
-    for (unsigned i = 0; i <= std::max(maxPc, static_cast<unsigned>(assembly.size())); ++i) {
+    for (unsigned i = 0; i < std::max(maxPc + 1, static_cast<unsigned>(assembly.size())); ++i) {
         if (msg[i] != "") {
             result[i] += "    # " + msg[i];
         }
