@@ -54,6 +54,7 @@ void InstDisassembler::start() {
         }
         assembly.push_back(ret.toString());
     }
+    maxPc = static_cast<unsigned>(assembly.size());
     if (useLabel) {
         for (unsigned i = 0; i < assembly.size(); ++i) {
             std::string& current = assembly[i];
