@@ -10,7 +10,7 @@ Language used: MIPS(simplified)
 Build
 -----
 `make` or `cmake <path to source>`<br/>
-Output Filename would be `assembler`
+Output filename would be `assembler`
 
 Run
 ---
@@ -28,12 +28,22 @@ Options:<br/>
 
 Branch label supported.<br/>
 An example MIPS code:<br/>
-j somewhere<br/>
-lw $1, 2($0)<br/>
-j 0x3  # number start with 0x is hexdecimal<br/>
-addi $2, $3, -5<br/>
-addi $t1, $sp, 62  # or directly use t1, t2, sp, etc.<br/>
-somewhere: add $1, $2, $3<br/>
+```
+# use # for comment(like // in c language)
+# use label on branch instruction
+    beq $0, $0, L0
+# or use constant directly
+    beq $0, $0, 2
+# number start with 0x is hexdecimal
+    addi $1, $1, 0x1F
+# you can also use register name t1, t2, sp, etc, directly
+    addi $t1, $sp, 62
+# remember to define label use <label name>:
+L0: add $1, $2, $3
+# more examples
+    lw $1, 2($0)
+    addi $2, $3, -5
+```
 
 Disassembler
 ------------
@@ -43,10 +53,10 @@ Disassembler
 `./assembler -d [options] InputFilename -o OutputFilename`
 
 Options:<br/>
-`-dec` show all constants in decimal(default)<br/>
+`-dec` show all constants in decimal (default)<br/>
 `-hex` show all constants in hexdecimal<br/>
-`-label` show branch target with label(default)<br/>
+`-label` show branch target with label (default)<br/>
 `-nolabel` show branch without label<br/>
 An example for `-label` and `-nolabel`<br/>
 With `-label`: beq $0, $0, L0<br/>
-With `-nolabel`: beq $0, $0, 1
+With `-nolabel`: beq $0, $0, 3
