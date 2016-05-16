@@ -34,12 +34,12 @@ An example MIPS code:<br/>
     beq $0, $0, L0
 # or use constant directly
     beq $0, $0, 2
+# remember to define label using <label name>:
+L0: add $1, $2, $3
 # number start with 0x is hexdecimal
     addi $1, $1, 0x1F
-# you can also use register name t1, t2, sp, etc, directly
+# use register name t1, t2, sp, etc, directly
     addi $t1, $sp, 62
-# remember to define label use <label name>:
-L0: add $1, $2, $3
 # more examples
     lw $1, 2($0)
     addi $2, $3, -5
