@@ -92,8 +92,11 @@ int main(int argc, char** argv) {
             initialPc = static_cast<unsigned>(argu.initPc);
         }
         if (initialPc % 4) {
-            fprintf(stderr, "%d: pc value must be divisible by 4.\n", initialPc);
+            fprintf(stderr, "Error: -pc %u: must be divisible by 4.\n", initialPc);
             exit(EXIT_FAILURE);
+        }
+        if (initialPc > 4096u) {
+            fprintf(stderr, "Warning: -pc %u: greater than 4096.\n", initialPc);
         }
         lb::InstAssembler assembler;
         assembler.init(argu.outputFile);

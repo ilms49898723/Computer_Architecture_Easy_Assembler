@@ -30,7 +30,7 @@ InstDisassembler::~InstDisassembler() {
 
 void InstDisassembler::init(const unsigned* inst, const unsigned& len, const unsigned& pc) {
     if (pc / 4 + len > MAXN) {
-        fprintf(stderr, "Error: Disassembler: iimage is too large(max 4096 instructions)\n");
+        fprintf(stderr, "Error: Disassembler: instruction image is too large(maximum 4096 instructions)\n");
         exit(EXIT_FAILURE);
     }
     for (unsigned i = pc / 4, j = 0; j < len; ++i, ++j) {
