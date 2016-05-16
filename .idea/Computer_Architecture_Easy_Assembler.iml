@@ -2,24 +2,24 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/InstDecoder.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InstLookUp.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/InstImageReader.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/InstEncoder.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InstDisassembler.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/InstDecoder.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InstType.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InstDataBin.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InstEncoder.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InstDataStr.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/InstAssembler.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/InstDataBin.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/InstAssembler.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InstUtility.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/InstDecoder.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/InstImageReader.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/InstEncoder.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InstAssembler.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InstEncoder.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InstDataBin.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InstDisassembler.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InstAssembler.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InstImageReader.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InstImageReader.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/InstType.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/InstDecoder.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InstDataStr.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InstLookUp.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/InstUtility.cpp" isTestSource="false" />
