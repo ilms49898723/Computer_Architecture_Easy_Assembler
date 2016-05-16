@@ -40,9 +40,15 @@ L0: add $1, $2, $3
     addi $1, $1, 0x1F
 # use register name t1, t2, sp, etc, directly
     addi $t1, $sp, 62
+# for nop, can use "nop" instead of "sll $0, $0, 0"
+    nop
 # more examples
     lw $1, 2($0)
     addi $2, $3, -5
+    beq $0, $0, -10
+    j L0
+    jal 5
+    halt
 ```
 
 Disassembler
