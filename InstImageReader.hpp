@@ -1,18 +1,18 @@
 /*
- * InstImageReader.h
+ * InstImageReader.hpp
  *
  *  Created on: 2016/03/24
  *      Author: LittleBird
  */
 
-#ifndef INSTIMAGEREADER_H_
-#define INSTIMAGEREADER_H_
+#ifndef COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTIMAGEREADER_HPP_
+#define COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTIMAGEREADER_HPP_
 
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 
-namespace lb {
+namespace inst {
 
 // read iimage.bin, dimage.bin using C I/O
 class InstImageReader {
@@ -31,6 +31,6 @@ public:
     static unsigned readWordFromBin(FILE* fin);
 };
 
-} /* namespace lb */
+} /* namespace inst */
 
-#endif /* INSTIMAGEREADER_H_ */
+#endif /* COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTIMAGEREADER_HPP_ */

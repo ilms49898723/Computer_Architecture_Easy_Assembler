@@ -5,9 +5,9 @@
  *      Author: LittleBird
  */
 
-#include "InstUtility.h"
+#include "InstUtility.hpp"
 
-namespace lb {
+namespace inst {
 
 int fwriteUnsigned(FILE* fout, const unsigned& src) {
     unsigned char buffer[4];
@@ -149,4 +149,4 @@ unsigned getBitsInRange(const unsigned& src, const int& l, const int& r) {
     return (src << (32 - r)) >> (l + (32 - r));
 }
 
-} /* namespace lb */
+} /* namespace inst */

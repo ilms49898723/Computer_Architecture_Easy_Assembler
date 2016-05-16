@@ -1,22 +1,21 @@
 /*
- * InstData.h
+ * InstData.hpp
  *
  *  Created on: 2016/03/09
  *      Author: LittleBird
  */
 
-#ifndef INSTDATASTR_H_
-#define INSTDATASTR_H_
+#ifndef COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTDATASTR_HPP_
+#define COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTDATASTR_HPP_
 
 #include <string>
-#include "InstUtility.h"
-#include "InstType.h"
+#include "InstUtility.hpp"
+#include "InstType.hpp"
 
-namespace lb {
+namespace inst {
 
 // Data structure to store readable Instruction set using "String"
 // Use getXXX() function to access private members
-
 class InstDataStr {
 public:
     InstDataStr();
@@ -63,6 +62,6 @@ private:
     std::string funct;
 };
 
-} /* namespace lb */
+} /* namespace inst */
 
-#endif /* INSTDATASTR_H_ */
+#endif /* COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTDATASTR_HPP_ */

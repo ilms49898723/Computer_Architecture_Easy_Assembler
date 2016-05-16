@@ -5,9 +5,9 @@
  *      Author: LittleBird
  */
 
-#include "InstAssembler.h"
+#include "InstAssembler.hpp"
 
-namespace lb {
+namespace inst {
 
 InstAssembler::InstAssembler() {
     valid = true;
@@ -61,4 +61,4 @@ void InstAssembler::start() {
     }
 }
 
-}
+} /* namespace inst */

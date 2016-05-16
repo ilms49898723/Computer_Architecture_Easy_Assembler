@@ -5,9 +5,9 @@
  *      Author: LittleBird
  */
 
-#include "InstEncoder.h"
+#include "InstEncoder.hpp"
 
-namespace lb {
+namespace inst {
 
 InstEncoder::InstEncoder() {
     init();
@@ -652,4 +652,4 @@ std::string InstEncoder::removeComment(const std::string& src) {
     }
 }
 
-} /* namespace lb */
+} /* namespace inst */

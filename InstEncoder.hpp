@@ -1,22 +1,22 @@
 /*
- * InstEncoder.h
+ * InstEncoder.hpp
  *
  *  Created on: 2016/04/12
  *      Author: LittleBird
  */
 
-#ifndef INSTENCODER_H_
-#define INSTENCODER_H_
+#ifndef COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTENCODER_HPP_
+#define COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTENCODER_HPP_
 
 #include <cstdio>
 #include <cctype>
 #include <string>
 #include <map>
 #include <utility>
-#include "InstLookUp.h"
-#include "InstUtility.h"
+#include "InstLookUp.hpp"
+#include "InstUtility.hpp"
 
-namespace lb {
+namespace inst {
 
 struct InstEncodeData {
     unsigned inst;
@@ -90,7 +90,6 @@ private:
     std::map<std::string, int> labelTable;
 };
 
-} /* namespace lb */
+} /* namespace inst */
 
-
-#endif /* INSTENCODER_H_ */
+#endif /* COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTENCODER_HPP_ */

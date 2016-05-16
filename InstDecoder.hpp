@@ -1,21 +1,21 @@
 /*
- * InstDecode.h
+ * InstDecoder.hpp
  *
  *  Created on: 2016/03/09
  *      Author: LittleBird
  */
 
-#ifndef INSTDECODER_H_
-#define INSTDECODER_H_
+#ifndef COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTDECODER_HPP_
+#define COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTDECODER_HPP_
 
 #include <string>
-#include "InstDataBin.h"
-#include "InstDataStr.h"
-#include "InstLookUp.h"
-#include "InstUtility.h"
-#include "InstType.h"
+#include "InstDataBin.hpp"
+#include "InstDataStr.hpp"
+#include "InstLookUp.hpp"
+#include "InstUtility.hpp"
+#include "InstType.hpp"
 
-namespace lb {
+namespace inst {
 
 class InstDecoder {
 public:
@@ -34,6 +34,6 @@ public:
 
 };
 
-} /* namespace lb */
+} /* namespace inst */
 
-#endif /* INSTDECODER_H_ */
+#endif /* COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTDECODER_HPP_ */

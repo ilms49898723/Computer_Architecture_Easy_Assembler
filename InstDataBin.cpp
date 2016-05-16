@@ -5,9 +5,9 @@
  *      Author: LittleBird
  */
 
-#include "InstDataBin.h"
+#include "InstDataBin.hpp"
 
-namespace lb {
+namespace inst {
 
 InstDataBin::InstDataBin() {
     type = InstType::Undef;
@@ -82,4 +82,4 @@ void InstDataBin::setInst(const unsigned& val) {
     inst = val;
 }
 
-} /* namespace lb */
+} /* namespace inst */

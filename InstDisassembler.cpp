@@ -5,9 +5,9 @@
  *      Author: LittleBird
  */
 
-#include "InstDisassembler.h"
+#include "InstDisassembler.hpp"
 
-namespace lb {
+namespace inst {
 
 InstDisassembler::InstDisassembler() {
     this->useLabel = true;
@@ -238,4 +238,4 @@ std::string InstDisassembler::getLine(const unsigned& line) const {
     return result[line];
 }
 
-}
+} /* namespace inst */

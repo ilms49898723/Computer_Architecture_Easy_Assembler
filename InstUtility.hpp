@@ -1,19 +1,19 @@
 /*
- * InstUtility.h
+ * InstUtility.hpp
  *
  *  Created on: 2016/03/10
  *      Author: LittleBird
  */
 
-#ifndef INSTUTILITY_H_
-#define INSTUTILITY_H_
+#ifndef COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTUTILITY_HPP_
+#define COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTUTILITY_HPP_
 
 #include <cstring>
 #include <sstream>
 #include <string>
-#include "InstType.h"
+#include "InstType.hpp"
 
-namespace lb {
+namespace inst {
 
 struct AssemblerArgumentInfo {
     bool useHex;
@@ -82,6 +82,6 @@ unsigned toUnsigned(const int& src);
 // zero based
 unsigned getBitsInRange(const unsigned& src, const int& l, const int& r);
 
-} /* namespace lb */
+} /* namespace inst */
 
-#endif /* INSTUTILITY_H_ */
+#endif /* COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTUTILITY_HPP_ */

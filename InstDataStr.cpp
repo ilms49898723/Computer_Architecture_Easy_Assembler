@@ -5,9 +5,9 @@
  *      Author: LittleBird
  */
 
-#include "InstDataStr.h"
+#include "InstDataStr.hpp"
 
-namespace lb {
+namespace inst {
 
 InstDataStr::InstDataStr() {
     type = InstType::Undef;
@@ -128,4 +128,4 @@ std::string InstDataStr::toString() const {
     }
 }
 
-} /* namespace lb */
+} /* namespace inst */

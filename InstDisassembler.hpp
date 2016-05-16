@@ -1,21 +1,21 @@
 /*
- * InstDisassembler.h
+ * InstDisassembler.hpp
  *
  *  Created on: 2016/04/12
  *      Author: LittleBird
  */
 
-#ifndef INSTDISASSEMBLER_H_
-#define INSTDISASSEMBLER_H_
+#ifndef COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTDISASSEMBLER_HPP_
+#define COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTDISASSEMBLER_HPP_
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <vector>
 #include <map>
-#include "InstDecoder.h"
+#include "InstDecoder.hpp"
 
-namespace lb {
+namespace inst {
 
 class InstDisassembler {
 private:
@@ -51,6 +51,6 @@ private:
     std::string result[MAXN];
 };
 
-} /* namespace lb */
+} /* namespace inst */
 
-#endif /* INSTDISASSEMBLER_H_ */
+#endif /* COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTDISASSEMBLER_HPP_ */

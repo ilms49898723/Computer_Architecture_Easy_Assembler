@@ -5,9 +5,9 @@
  *      Author: LittleBird
  */
 
-#include "InstImageReader.h"
+#include "InstImageReader.hpp"
 
-namespace lb {
+namespace inst {
 
 unsigned int InstImageReader::readImageI(std::string filePath, unsigned* dst, unsigned* pc, size_t n) {
     FILE* iimage = fopen(filePath.c_str(), "rb");
@@ -77,4 +77,4 @@ unsigned InstImageReader::readWordFromBin(FILE* fin) {
     return (input[0] << 24) | (input[1] << 16) | (input[2] << 8) | (input[3]);
 }
 
-} /* namespace lb */
+} /* namespace inst */

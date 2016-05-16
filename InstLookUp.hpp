@@ -1,17 +1,17 @@
 /*
- * InstLookUp.h
+ * InstLookUp.hpp
  *
  *  Created on: 2016/03/09
  *      Author: LittleBird
  */
 
-#ifndef INSTLOOKUP_H_
-#define INSTLOOKUP_H_
+#ifndef COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTLOOKUP_HPP_
+#define COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTLOOKUP_HPP_
 
 #include <string>
-#include "InstUtility.h"
+#include "InstUtility.hpp"
 
-namespace lb {
+namespace inst {
 
 class InstLookUp {
 public:
@@ -42,6 +42,6 @@ private:
     const static std::string registerLookUpTable[];
 };
 
-} /* namespace lb */
+} /* namespace inst */
 
-#endif /* INSTLOOKUP_H_ */
+#endif /* COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTLOOKUP_HPP_ */

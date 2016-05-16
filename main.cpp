@@ -12,12 +12,12 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "InstUtility.h"
-#include "InstEncoder.h"
-#include "InstDecoder.h"
-#include "InstAssembler.h"
-#include "InstDisassembler.h"
-#include "InstImageReader.h"
+#include "InstUtility.hpp"
+#include "InstEncoder.hpp"
+#include "InstDecoder.hpp"
+#include "InstAssembler.hpp"
+#include "InstDisassembler.hpp"
+#include "InstImageReader.hpp"
 
 int main(int argc, char** argv) {
     if (argc == 2 && (std::string(argv[1]) == "-h" || std::string(argv[1]) == "--help")) {
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
         printf("\n");
         exit(EXIT_SUCCESS);
     }
-    lb::AssemblerArgumentInfo argu = lb::processArguments(argc, argv);
+    inst::AssemblerArgumentInfo argu = inst::processArguments(argc, argv);
     if (!argu.isValid) {
         fprintf(stderr, "Invalid Arguments\nUse %s -h or --help for more information\n", argv[0]);
         exit(EXIT_FAILURE);
@@ -61,8 +61,8 @@ int main(int argc, char** argv) {
         }
         unsigned len, pc;
         unsigned inst[4096];
-        len = lb::InstImageReader::readImageI(fin, inst, &pc, 4096);
-        lb::InstDisassembler disassembler;
+        len = inst::InstImageReader::readImageI(fin, inst, &pc, 4096);
+        inst::InstDisassembler disassembler;
         disassembler.setUseLabel(!argu.hasNoLabel);
         disassembler.setUseHex(argu.useHex);
         disassembler.init(inst, len, pc);
@@ -98,7 +98,7 @@ int main(int argc, char** argv) {
         if (initialPc > 4096u) {
             fprintf(stderr, "Warning: -pc %u: greater than 4096\n", initialPc);
         }
-        lb::InstAssembler assembler;
+        inst::InstAssembler assembler;
         assembler.init(argu.outputFile);
         assembler.setInitialPc(initialPc);
         char inputBuffer[4096];

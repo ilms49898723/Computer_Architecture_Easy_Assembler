@@ -1,22 +1,22 @@
 /*
- * InstAssembler.h
+ * InstAssembler.hpp
  *
  *  Created on: 2016/04/13
  *      Author: LittleBird
  */
 
-#ifndef INSTASSEMBLER_H_
-#define INSTASSEMBLER_H_
+#ifndef COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTASSEMBLER_HPP_
+#define COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTASSEMBLER_HPP_
 
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <string>
 #include <vector>
-#include "InstEncoder.h"
-#include "InstUtility.h"
+#include "InstEncoder.hpp"
+#include "InstUtility.hpp"
 
-namespace lb {
+namespace inst {
 
 class InstAssembler {
 public:
@@ -39,6 +39,6 @@ private:
     std::vector<unsigned> binary;
 };
 
-} /* namespace lb */
+} /* namespace inst */
 
-#endif /* INSTASSEMBLER_H_ */
+#endif /* COMPUTER_ARCHITECTURE_MINI_ASSEMBLER_INSTASSEMBLER_HPP_ */
