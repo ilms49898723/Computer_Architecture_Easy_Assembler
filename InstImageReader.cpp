@@ -26,7 +26,7 @@ unsigned int InstImageReader::readImageI(FILE* iimage, unsigned* dst, unsigned* 
     unsigned wordRead = 0;
     *pc = readPc;
     if (len > n) {
-        fprintf(stderr, "Error: buffer to store iimage is not large enough\n");
+        fprintf(stderr, "Error: buffer to store instruction image is not large enough\n");
         exit(EXIT_FAILURE);
     }
     for (wordRead = 0; wordRead < len; ++wordRead) {
@@ -52,7 +52,7 @@ unsigned int InstImageReader::readImageD(FILE* dimage, unsigned* dst, unsigned* 
     unsigned wordRead = 0;
     *sp = readSp;
     if (len > n) {
-        fprintf(stderr, "Error: buffer to store dimage is not large enough\n");
+        fprintf(stderr, "Error: buffer to store data image is not large enough\n");
         exit(EXIT_FAILURE);
     }
     for (wordRead = 0; wordRead < len; ++wordRead) {

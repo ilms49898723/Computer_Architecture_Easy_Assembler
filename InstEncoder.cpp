@@ -379,7 +379,7 @@ unsigned InstEncoder::getReg(const std::string& src, const int& cnt) {
     }
     if (isEmptyOrCommentLine(src)) {
         char errorMessage[1100];
-        sprintf(errorMessage, "Syntax Error: Missing Arguments");
+        sprintf(errorMessage, "Syntax Error: Missing parameters");
         printErrorMessage(errorMessage, cnt);
         valid = false;
         return 0xFFFFFFFFu;
@@ -415,7 +415,7 @@ unsigned InstEncoder::getC(const std::string& src, const int& cnt) {
     }
     if (isEmptyOrCommentLine(src)) {
         char errorMessage[1100];
-        sprintf(errorMessage, "Syntax Error: Missing Arguments");
+        sprintf(errorMessage, "Syntax Error: Missing parameters");
         printErrorMessage(errorMessage, cnt);
         valid = false;
         return 0xFFFFFFFFu;
@@ -443,7 +443,7 @@ unsigned InstEncoder::getBranchC(const std::string& src, const int& cnt) {
     }
     if (isEmptyOrCommentLine(src)) {
         char errorMessage[1100];
-        sprintf(errorMessage, "Syntax Error: Missing Arguments");
+        sprintf(errorMessage, "Syntax Error: Missing parameters");
         printErrorMessage(errorMessage, cnt);
         valid = false;
         return 0xFFFFFFFFu;
@@ -573,7 +573,7 @@ bool InstEncoder::isNumber(const std::string& src) {
 
 bool InstEncoder::checkElementsCount(const int& cnt) {
     if (elementsLength != cnt) {
-        printErrorMessage("Invalid Instructions, too many/few arguments, or mistyped", 0);
+        printErrorMessage("Invalid Instruction, number of parameters not matched", 0);
     }
     return elementsLength == cnt;
 }

@@ -46,7 +46,7 @@ void InstDisassembler::start() {
     for (unsigned i = 0; i < len; ++i) {
         InstDataStr ret = InstDecoder::decodeInstStr(inst[i], useHex);
         if (ret.getType() == InstType::Undef) {
-            fprintf(stderr, "Warning: Instruction #%d: Undefined instruction 0x%08X was found.\n         Replaced by nop.\n", i + 1, inst[i]);
+            fprintf(stderr, "Warning: Instruction #%d: Undefined instruction 0x%08X was found\n         Replaced by nop\n", i + 1, inst[i]);
             ret = InstDecoder::decodeInstStr(0u, useHex);
             char instHex[MAXN];
             snprintf(instHex, MAXN, "0x%08X", inst[i]);
@@ -173,8 +173,8 @@ void InstDisassembler::start() {
             }
         }
         if (maxPc + 1 > MAXN) {
-            fprintf(stderr, "Warning: Some target addresses of branch instructions are too large.\n");
-            fprintf(stderr, "         Try to use -nolabel to disable label auto generation.\n");
+            fprintf(stderr, "Warning: Some target addresses of branch instructions are too large\n");
+            fprintf(stderr, "         Try to use -nolabel to disable label auto generation\n");
             exit(EXIT_FAILURE);
         }
     }
