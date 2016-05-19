@@ -2,7 +2,6 @@
 
 Design
 ------
-
 A mini assembler/disassembler for NTHU course Computer Architecture
 
 Language used: MIPS(simplified)
@@ -18,22 +17,28 @@ Run
 
 Assembler
 ---------
-
 `-a` for assembler<br/>
 
 `./assembler -a [options] InputFilename -o OutputFilename`
 
 Options:<br/>
-`-pc value` to specify initial pc value, for example, `-pc 512`
+`-pc value` to specify initial pc value using decimal(should be divisible by 4).<br/>
+for example, if using `./assembler -a test.s -o iimage.bin -pc 512`,<br/>
+```
+addi $0, $0, 0    # pc for the first instruction in assembly code will be 512
+addi $1, $1, 1
+addi $2, $2, 2
+```
 
 Branch label supported.<br/>
+
 An example MIPS code:<br/>
 ```
 # use # for comment(like // in c language)
 # use label on branch instruction
     beq $0, $0, L0
 # or use constant directly
-    beq $0, $0, 2
+    beq $0, $0, -10
 # remember to define label using <label name>:
 L0: add $1, $2, $3
 # number start with 0x is hexdecimal
@@ -45,7 +50,7 @@ L0: add $1, $2, $3
 # more examples
     lw $1, 2($0)
     addi $2, $3, -5
-    beq $0, $0, -10
+    bgtz $5, 10
     j L0
     jal 5
     halt
@@ -53,7 +58,6 @@ L0: add $1, $2, $3
 
 Disassembler
 ------------
-
 `-d` for disassembler<br/>
 
 `./assembler -d [options] InputFilename -o OutputFilename`
@@ -63,6 +67,10 @@ Options:<br/>
 `-hex` show all constants in hexdecimal<br/>
 `-label` show branch target with label (default)<br/>
 `-nolabel` show branch without label<br/>
-An example for `-label` and `-nolabel`<br/>
-With `-label`: beq $0, $0, L0<br/>
-With `-nolabel`: beq $0, $0, 3
+An example for `-dec`, `-hex`, `-label` and `-nolabel`:<br/>
+```
+    addi $1, $1, 31    # with -dec (default)
+    addi $1, $1, 0x1f  # with -hex
+L0: beq $0, $0, L0     # with -label (default)
+    beq $0, $0, 2      # with -nolabel
+```
