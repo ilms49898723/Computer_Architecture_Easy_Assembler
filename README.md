@@ -1,14 +1,15 @@
-# Computer_Architecture_Mini_Assembler
+Computer Architecture Mini Assembler
+====================================
 
 Design
 ------
-A mini assembler/disassembler for NTHU course Computer Architecture
+A mini assembler/disassembler for NTHU course Computer Architecture(CS410001)
 
 Language used: MIPS(simplified)
 
 Build
 -----
-`make` or `cmake <path to source>`<br/>
+`make` or `cmake <path-to-source>`<br/>
 Output filename would be `assembler`
 
 Run
@@ -23,7 +24,7 @@ Assembler
 
 Options:<br/>
 `-pc value` to specify initial pc value using decimal(should be divisible by 4).<br/>
-for example, if using `./assembler -a test.s -o iimage.bin -pc 512`,<br/>
+For example, if using `./assembler -a test.s -o iimage.bin -pc 512`,<br/>
 ```
 addi $0, $0, 0    # pc for the first instruction in assembly code will be 512
 addi $1, $1, 1
@@ -49,6 +50,8 @@ L0: add $1, $2, $3
     nop
 # more examples
     lw $1, 2($0)
+    sw $1, 4096($0)
+    sll $0, $1, $2
     addi $2, $3, -5
     bgtz $5, 10
     j L0
