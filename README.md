@@ -35,7 +35,7 @@ Branch label supported.<br/>
 
 An example MIPS code:<br/>
 ```
-# use # for comment(like // in c language)
+# use # for comment
 # use label on branch instruction
     beq $0, $0, L0
 # or use constant directly
