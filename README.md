@@ -66,13 +66,13 @@ Disassembler
 `./assembler -d [options] InputFilename -o OutputFilename`
 
 Output assembly code will start from pc 0.<br/>
-If an iimage.bin file has initial `pc = 4` and has only one instruction `halt`,<br/>
+For example, if an image file has `initial pc = 4` and has only one instruction `halt`,<br/>
 output will be:
 ```
 nop
 halt
 ```
-Note that nop(pc = 0), halt(pc = 4).
+Note that `pc of nop = 0`, `pc of halt = 4`.
 
 Options:<br/>
 `-dec` show all constants in decimal (default)<br/>
