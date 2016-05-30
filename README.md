@@ -10,7 +10,7 @@ Language used: MIPS(simplified)
 Build
 -----
 `make` or `cmake <path-to-source>`<br/>
-Output filename would be `assembler`
+Output filename would be `assembler`.
 
 Run
 ---
@@ -51,7 +51,7 @@ L0: add $1, $2, $3
 # more examples
     lw $1, 2($0)
     sw $1, 4096($0)
-    sll $0, $1, $2
+    sll $0, $1, 2
     addi $2, $3, -5
     bgtz $5, 10
     j L0
@@ -64,6 +64,15 @@ Disassembler
 `-d` for disassembler<br/>
 
 `./assembler -d [options] InputFilename -o OutputFilename`
+
+Output assembly code will start from pc 0.<br/>
+If an iimage.bin file has initial `pc = 4` and has only one instruction `halt`,<br/>
+output will be:
+```
+nop
+halt
+```
+Note that nop(pc = 0), halt(pc = 4).
 
 Options:<br/>
 `-dec` show all constants in decimal (default)<br/>
