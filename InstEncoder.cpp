@@ -39,6 +39,10 @@ void InstEncoder::processLabel(std::string& src) {
         std::string label = trimWhiteSpace(src.substr(0, loc));
         src = src.substr(loc + 1);
         src = trimLeadingWhiteSpace(src);
+        if (labelTable.count(label)) {
+            fprintf(stderr, "Syntax Error: Multiple definition of label %s\n", label.c_str());
+            exit(EXIT_FAILURE);
+        }
         labelTable.insert(make_pair(label, preprocessPc));
         preprocessPc += 4;
         return;
